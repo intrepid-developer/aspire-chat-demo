@@ -1,0 +1,40 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AspireChat.AppHost", "AspireChat.AppHost\AspireChat.AppHost.csproj", "{B4AFA26B-4204-466F-8194-BA1D88D9DF12}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AspireChat.ServiceDefaults", "AspireChat.ServiceDefaults\AspireChat.ServiceDefaults.csproj", "{D3D8290F-E629-4214-9224-9AD6EDE7E292}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AspireChat.Api", "AspireChat.Api\AspireChat.Api.csproj", "{53146BDC-987E-48B9-86CB-436039C39F7F}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AspireChat.Web", "AspireChat.Web\AspireChat.Web.csproj", "{9FD33619-CB29-468F-A19E-173621002CDF}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AspireChat.Tests", "AspireChat.Tests\AspireChat.Tests.csproj", "{3F5CA20C-27A9-4C78-9E7B-94F4AD64AEB7}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{B4AFA26B-4204-466F-8194-BA1D88D9DF12}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B4AFA26B-4204-466F-8194-BA1D88D9DF12}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B4AFA26B-4204-466F-8194-BA1D88D9DF12}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B4AFA26B-4204-466F-8194-BA1D88D9DF12}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D3D8290F-E629-4214-9224-9AD6EDE7E292}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D3D8290F-E629-4214-9224-9AD6EDE7E292}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D3D8290F-E629-4214-9224-9AD6EDE7E292}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D3D8290F-E629-4214-9224-9AD6EDE7E292}.Release|Any CPU.Build.0 = Release|Any CPU
+		{53146BDC-987E-48B9-86CB-436039C39F7F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{53146BDC-987E-48B9-86CB-436039C39F7F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{53146BDC-987E-48B9-86CB-436039C39F7F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{53146BDC-987E-48B9-86CB-436039C39F7F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9FD33619-CB29-468F-A19E-173621002CDF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9FD33619-CB29-468F-A19E-173621002CDF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9FD33619-CB29-468F-A19E-173621002CDF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9FD33619-CB29-468F-A19E-173621002CDF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3F5CA20C-27A9-4C78-9E7B-94F4AD64AEB7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3F5CA20C-27A9-4C78-9E7B-94F4AD64AEB7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3F5CA20C-27A9-4C78-9E7B-94F4AD64AEB7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3F5CA20C-27A9-4C78-9E7B-94F4AD64AEB7}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+EndGlobal

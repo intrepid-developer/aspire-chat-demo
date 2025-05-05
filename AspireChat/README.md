@@ -1,3 +1,5 @@
+WIP BLOG NOT LIVE YET, SUBJECT TO CHANGE
+
 # Aspire Chat Demo
 
 A modern, real-time chat application built with .NET Aspire and Azure, designed to demonstrate cloud-native application development patterns. This project is part of a blog series exploring how to leverage .NET Aspire with Azure services.
@@ -42,6 +44,7 @@ The application follows a microservices-inspired architecture with:
 - Docker Desktop
 - Visual Studio 2022 or later / VS Code with C# Dev Kit
 - Azure subscription (for deployment)
+- Aspire Cli
 
 ### Local Development
 
@@ -51,19 +54,23 @@ The application follows a microservices-inspired architecture with:
    cd aspire-chat-demo
    ```
 
-2. Run the application with Aspire dashboard:
+2. Install the Aspire Cli
+    ```
+    dotnet tool install --global aspire.cli --prerelease
+    ```
+3. Run the application with Aspire dashboard (from the AppHost directory):
    ```
-   dotnet run --project AspireChat.AppHost
+   aspire run
    ```
 
-3. Navigate to the Aspire dashboard (automatically opened) to view and manage your services
+4Navigate to the Aspire dashboard (automatically opened) to view and manage your services
 
 ### Deployment to Azure
 
 The blog series will cover step-by-step deployment to Azure using:
 - Azure Container Apps for hosting services
 - Azure SQL Database for data persistence
-- Azure Cache for Redis
+- Redis Cache (docker)
 - Azure Blob Storage for file storage
 
 ## ✨ Features
@@ -107,4 +114,5 @@ This project is licensed under the MIT License - see the LICENSE file for detail
 
 - Microsoft .NET team for Aspire
 - The FastEndpoints and Blazor teams
+- MudBlazor team for the amazing UI components
 - All contributors and the .NET community

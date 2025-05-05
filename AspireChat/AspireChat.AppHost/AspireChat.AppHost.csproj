@@ -1,0 +1,27 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <Sdk Name="Aspire.AppHost.Sdk" Version="9.2.1"/>
+
+    <PropertyGroup>
+        <OutputType>Exe</OutputType>
+        <TargetFramework>net9.0</TargetFramework>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>enable</Nullable>
+        <UserSecretsId>67437ad4-c794-44b2-a326-86edcd888c39</UserSecretsId>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <ProjectReference Include="..\AspireChat.Api\AspireChat.Api.csproj" />
+        <ProjectReference Include="..\AspireChat.Web\AspireChat.Web.csproj"/>
+    </ItemGroup>
+
+    <ItemGroup>
+        <PackageReference Include="Aspire.Hosting.AppHost" Version="9.2.1"/>
+        <PackageReference Include="Aspire.Hosting.Azure" Version="9.2.1" />
+        <PackageReference Include="Aspire.Hosting.Azure.AppContainers" Version="9.2.1" />
+        <PackageReference Include="Aspire.Hosting.Azure.Sql" Version="9.2.1" />
+        <PackageReference Include="Aspire.Hosting.Azure.Storage" Version="9.2.1" />
+        <PackageReference Include="Aspire.Hosting.Redis" Version="9.2.1"/>
+    </ItemGroup>
+
+</Project>
