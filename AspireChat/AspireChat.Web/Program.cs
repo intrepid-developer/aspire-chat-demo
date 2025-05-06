@@ -1,3 +1,4 @@
+using AspireChat.ServiceDefaults;
 using AspireChat.Web;
 using AspireChat.Web.Components;
 using MudBlazor.Services;

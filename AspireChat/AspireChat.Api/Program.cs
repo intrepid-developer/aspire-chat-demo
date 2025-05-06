@@ -1,3 +1,4 @@
+using AspireChat.ServiceDefaults;
 using FastEndpoints;
 using FastEndpoints.Security;
 
