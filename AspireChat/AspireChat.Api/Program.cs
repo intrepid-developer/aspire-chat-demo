@@ -1,4 +1,5 @@
 using FastEndpoints;
+using FastEndpoints.Security;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -13,6 +14,15 @@ builder.Services.AddOpenApi();
 
 // Add FastEndpoints
 builder.Services.AddFastEndpoints();
+builder.Services
+    .AddAuthenticationJwtBearer(s =>
+        s.SigningKey = builder.Configuration.GetValue<string>("JWT_KEY")
+    )
+    .AddAuthorization()
+    .AddFastEndpoints();
+builder.Services.Configure<JwtCreationOptions>(o =>
+    o.SigningKey = builder.Configuration.GetValue<string>("JWT_KEY") ?? throw new ArgumentNullException()
+);
 
 var app = builder.Build();
 
@@ -23,6 +33,9 @@ if (app.Environment.IsDevelopment())
 {
     app.MapOpenApi();
 }
+
+app.UseAuthentication();
+app.UseAuthorization();
 
 app.UseFastEndpoints();
 

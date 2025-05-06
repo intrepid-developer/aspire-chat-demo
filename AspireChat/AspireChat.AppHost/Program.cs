@@ -55,6 +55,10 @@ var storage = builder.AddAzureStorage("storage")
 // This creates a blob container within our storage account
 var blobStorage = storage.AddBlobs("blobs");
 
+//======================================================================
+// APP PARAMETERS AND SECRETS
+//======================================================================
+var jwtKey = builder.AddParameter("jwt-key", true);
 
 //======================================================================
 // APPLICATION COMPONENTS
@@ -65,6 +69,9 @@ var blobStorage = storage.AddBlobs("blobs");
 var api = builder.AddProject<Projects.AspireChat_Api>("api")
     // Add a health check endpoint so Aspire can monitor the API's status
     .WithHttpsHealthCheck("/health")
+    
+    //Add Secrets and Evironment variables
+    .WithEnvironment("JWT_KEY", jwtKey)
     
     // DEPLOYMENT NOTE:
     // When deployed to Azure, services are private by default
