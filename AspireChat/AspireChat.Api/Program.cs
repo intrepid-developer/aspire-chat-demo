@@ -1,3 +1,4 @@
+using AspireChat.Api.Entities;
 using AspireChat.ServiceDefaults;
 using FastEndpoints;
 using FastEndpoints.Security;
@@ -12,6 +13,9 @@ builder.Services.AddProblemDetails();
 
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
 builder.Services.AddOpenApi();
+
+// Add Entity Framework Core with SQL Server
+builder.AddSqlServerDbContext<AppDbContext>("db");
 
 // Add FastEndpoints
 builder.Services.AddFastEndpoints();

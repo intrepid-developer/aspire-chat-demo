@@ -1,10 +1,12 @@
+using System.Security.Claims;
+using AspireChat.Api.Entities;
 using AspireChat.Common.Users;
 using FastEndpoints;
 using FastEndpoints.Security;
 
 namespace AspireChat.Api.Users;
 
-public class RegisterEndpoint : Endpoint<Register.Request, Register.Response>
+public class RegisterEndpoint(AppDbContext db) : Endpoint<Register.Request, Register.Response>
 {
     public override void Configure()
     {
@@ -18,19 +20,34 @@ public class RegisterEndpoint : Endpoint<Register.Request, Register.Response>
 
     public override async Task HandleAsync(Register.Request req, CancellationToken ct)
     {
-        // Simulate user registration logic
-        await Task.Delay(1000, ct); // Simulate async work
+        var passwordHash = BCrypt.Net.BCrypt.HashPassword(req.Password);
+
+        var user = new User
+        {
+            Name = req.Name,
+            Email = req.Email,
+            PasswordHash = passwordHash,
+            CreatedAt = DateTime.UtcNow,
+            UpdatedAt = DateTime.UtcNow
+        };
+        
+        await db.Users.AddAsync(user, ct);
+
+        await db.SaveChangesAsync(ct);
 
         var token = JwtBearer.CreateToken(o =>
         {
-            o.ExpireAt = DateTime.UtcNow.AddHours(1);
-            o.User.Claims.Add(("UserId", "001"));
+            o.ExpireAt = DateTime.UtcNow.AddHours(24);
+            o.User.Claims.AddRange([
+                new Claim(ClaimTypes.Email, user!.Email),
+                new Claim(ClaimTypes.Name, user.Name),
+                new Claim(ClaimTypes.Sid, user.Id.ToString())
+            ]);
         });
-        
-        // Simulate successful registration
-        var userId = Guid.NewGuid();
-        var response = new Register.Response(userId, token, true);
 
-        await SendAsync(response, cancellation: ct);
+        await SendAsync(new Register.Response(
+            token,
+            true
+        ), cancellation: ct);
     }
 }

@@ -14,6 +14,7 @@
     <ItemGroup>
         <PackageReference Include="Aspire.Azure.Storage.Blobs" Version="9.2.1" />
         <PackageReference Include="Aspire.Microsoft.EntityFrameworkCore.SqlServer" Version="9.2.1" />
+        <PackageReference Include="BCrypt.Net-Next" Version="4.0.3" />
         <PackageReference Include="FastEndpoints" Version="6.0.0" />
         <PackageReference Include="FastEndpoints.Security" Version="6.0.0" />
         <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="9.0.4" />

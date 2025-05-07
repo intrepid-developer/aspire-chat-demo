@@ -1,9 +1,11 @@
+using AspireChat.Api.Entities;
 using AspireChat.Common.Chats;
 using FastEndpoints;
+using Microsoft.EntityFrameworkCore;
 
 namespace AspireChat.Api.Groups;
 
-public class GetAllEndpoint : Endpoint<GetAll.Request, GetAll.Response>
+public class GetAllEndpoint(AppDbContext db) : Endpoint<GetAll.Request, GetAll.Response>
 {
     public override void Configure()
     {
@@ -17,6 +19,11 @@ public class GetAllEndpoint : Endpoint<GetAll.Request, GetAll.Response>
 
     public override async Task HandleAsync(GetAll.Request req, CancellationToken ct)
     {
-        await SendOkAsync(new GetAll.Response([]), ct);
+        var groups = await db.Groups
+            .AsNoTracking()
+            .Select(group => new GetAll.Dto(group.Id, group.Name))
+            .ToListAsync(ct);
+        
+        await SendOkAsync(new GetAll.Response(groups), ct);
     }
 }

@@ -1,9 +1,12 @@
+using System.Security.Claims;
+using AspireChat.Api.Entities;
 using AspireChat.Common.Users;
 using FastEndpoints;
+using Microsoft.EntityFrameworkCore;
 
 namespace AspireChat.Api.Users;
 
-public class GetProfileEndpoint : Endpoint<GetProfile.Request, GetProfile.Response>
+public class GetProfileEndpoint(AppDbContext db) : Endpoint<GetProfile.Request, GetProfile.Response>
 {
     public override void Configure()
     {
@@ -16,7 +19,22 @@ public class GetProfileEndpoint : Endpoint<GetProfile.Request, GetProfile.Respon
 
     public override async Task HandleAsync(GetProfile.Request req, CancellationToken ct)
     {
+        var userId = User.FindFirst(ClaimTypes.Sid)?.Value;
+        if (userId is null)
+        {
+            await SendNotFoundAsync(ct);
+            return;
+        }
+
+        var user = await db.Users.FirstOrDefaultAsync(x => x.Id == int.Parse(userId), ct);
+
+        if (user is null)
+        {
+            await SendNotFoundAsync(ct);
+            return;
+        }
+
         await SendOkAsync(
-            new GetProfile.Response(Guid.NewGuid(), string.Empty, string.Empty, DateTime.Now, DateTime.Now), ct);
+            new GetProfile.Response(user.Name, user.Email, user.CreatedAt, user.UpdatedAt), ct);
     }
 }
