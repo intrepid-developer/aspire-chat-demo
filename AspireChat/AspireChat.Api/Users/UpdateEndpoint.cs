@@ -6,18 +6,19 @@ using Microsoft.EntityFrameworkCore;
 
 namespace AspireChat.Api.Users;
 
-public class GetProfileEndpoint(AppDbContext db) : Endpoint<GetProfile.Request, GetProfile.Response>
+public class UpdateEndpoint(AppDbContext db) : Endpoint<Update.Request, Update.Response>
 {
     public override void Configure()
     {
-        Get("/users/profile");
+        Put("/users");
         Description(x => x
-            .Produces<Register.Response>()
-            .Produces(StatusCodes.Status400BadRequest)
+            .WithName("UpdateUser")
+            .Produces<Update.Response>()
+            .Produces(StatusCodes.Status401Unauthorized)
             .Produces(StatusCodes.Status500InternalServerError));
     }
 
-    public override async Task HandleAsync(GetProfile.Request req, CancellationToken ct)
+    public override async Task HandleAsync(Update.Request req, CancellationToken ct)
     {
         var userId = User.FindFirst(ClaimTypes.Sid)?.Value;
         if (userId is null)
@@ -25,16 +26,24 @@ public class GetProfileEndpoint(AppDbContext db) : Endpoint<GetProfile.Request, 
             await SendNotFoundAsync(ct);
             return;
         }
-
         var user = await db.Users.FirstOrDefaultAsync(x => x.Id == int.Parse(userId), ct);
-
         if (user is null)
         {
             await SendNotFoundAsync(ct);
             return;
         }
+        
+        user.Email = req.Email;
+        user.Name = req.Name;
+        user.ProfileImageUrl = req.ProfileImageUrl;
+        
+        if(!string.IsNullOrEmpty(req.Password))
+        {
+            user.PasswordHash = BCrypt.Net.BCrypt.HashPassword(req.Password);
+        }
 
-        await SendOkAsync(
-            new GetProfile.Response(user.Name, user.Email, user.ProfileImageUrl, user.CreatedAt, user.UpdatedAt), ct);
+        await db.SaveChangesAsync(ct);
+
+        await SendOkAsync(new Update.Response(true), ct);
     }
 }
