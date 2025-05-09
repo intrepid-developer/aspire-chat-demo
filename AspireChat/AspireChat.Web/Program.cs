@@ -26,7 +26,11 @@ builder.Services.AddHttpClient<GroupClient>(client => { client.BaseAddress = new
 builder.Services.AddHttpClient<UserClient>(client => { client.BaseAddress = new("https+http://api"); });
 
 builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
-    .AddCookie();
+    .AddCookie(options =>
+    {
+        options.LoginPath = "/login"; // 👈 redirect here when unauthorized
+        options.AccessDeniedPath = "/access-denied"; // optional
+    });
 
 builder.Services.AddAuthorization();
 

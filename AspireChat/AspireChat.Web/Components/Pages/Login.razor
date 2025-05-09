@@ -1,6 +1,16 @@
 @page "/Login"
+@inject NavigationManager Navigation
 <h3>Login</h3>
 
+
 @code {
-    
+    [Parameter]
+    [SupplyParameterFromQuery]
+    public string? returnUrl { get; set; }
+
+    private void HandleLogin()
+    {
+        // After successful login:
+        Navigation.NavigateTo(returnUrl ?? "/");
+    }
 }
