@@ -1,5 +1,5 @@
 using AspireChat.Api.Entities;
-using AspireChat.Common.Chats;
+using AspireChat.Common.Groups;
 using FastEndpoints;
 using Microsoft.EntityFrameworkCore;
 
@@ -21,7 +21,7 @@ public class GetAllEndpoint(AppDbContext db) : Endpoint<GetAll.Request, GetAll.R
     {
         var groups = await db.Groups
             .AsNoTracking()
-            .Select(group => new GetAll.Dto(group.Id, group.Name))
+            .Select(group => new GetAll.Dto(group.Id, group.Name, group.CreatedAt, group.UpdatedAt))
             .ToListAsync(ct);
         
         await SendOkAsync(new GetAll.Response(groups), ct);

@@ -46,4 +46,11 @@ app.UseFastEndpoints();
 
 app.MapDefaultEndpoints();
 
+// Apply migrations and create the database if it doesn't exist
+using (var scope = app.Services.CreateScope())
+{
+    var dbContext = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+    await dbContext.Database.EnsureCreatedAsync();
+}
+
 app.Run();

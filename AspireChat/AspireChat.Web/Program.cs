@@ -1,6 +1,8 @@
 using AspireChat.ServiceDefaults;
 using AspireChat.Web;
+using AspireChat.Web.Clients;
 using AspireChat.Web.Components;
+using AspireChat.Web.Services;
 using MudBlazor.Services;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -16,12 +18,11 @@ builder.Services.AddMudServices();
 builder.Services.AddRazorComponents()
     .AddInteractiveServerComponents();
 
-builder.Services.AddHttpClient<ApiClient>(client =>
-{
-    // This URL uses "https+http://" to indicate HTTPS is preferred over HTTP.
-    // Learn more about service discovery scheme resolution at https://aka.ms/dotnet/sdschemes.
-    client.BaseAddress = new("https+http://api");
-});
+builder.Services.AddSingleton<AuthenticationService>();
+
+builder.Services.AddHttpClient<ChatClient>(client => { client.BaseAddress = new("https+http://api"); });
+builder.Services.AddHttpClient<GroupClient>(client => { client.BaseAddress = new("https+http://api"); });
+builder.Services.AddHttpClient<UserClient>(client => { client.BaseAddress = new("https+http://api"); });
 
 var app = builder.Build();
 
