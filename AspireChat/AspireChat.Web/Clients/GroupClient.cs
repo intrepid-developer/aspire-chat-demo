@@ -9,7 +9,7 @@ public class GroupClient(AuthenticationService authService, HttpClient httpClien
     {
         try
         {
-            httpClient.DefaultRequestHeaders.Authorization = authService.AuthorizationHeaderValue;
+            httpClient.DefaultRequestHeaders.Authorization = authService.AuthorizationHeaderValue();
             var response = await httpClient.PostAsJsonAsync("/groups/create", request, cancellationToken);
             response.EnsureSuccessStatusCode();
             var content = await response.Content.ReadFromJsonAsync<Create.Response>(cancellationToken);
@@ -26,7 +26,7 @@ public class GroupClient(AuthenticationService authService, HttpClient httpClien
     {
         try
         {
-            httpClient.DefaultRequestHeaders.Authorization = authService.AuthorizationHeaderValue;
+            httpClient.DefaultRequestHeaders.Authorization = authService.AuthorizationHeaderValue();
             var response = await httpClient.GetAsync("/groups", cancellationToken);
             response.EnsureSuccessStatusCode();
             var content = await response.Content.ReadFromJsonAsync<GetAll.Response>(cancellationToken);

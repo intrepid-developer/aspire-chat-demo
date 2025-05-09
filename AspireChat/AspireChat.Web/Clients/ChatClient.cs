@@ -9,7 +9,7 @@ public class ChatClient(AuthenticationService authService, HttpClient httpClient
     {
         try
         {
-            httpClient.DefaultRequestHeaders.Authorization = authService.AuthorizationHeaderValue;
+            httpClient.DefaultRequestHeaders.Authorization = authService.AuthorizationHeaderValue();
             var response = await httpClient.GetAsync($"/chats/{groupId}", cancellationToken);
             response.EnsureSuccessStatusCode();
             var content = await response.Content.ReadFromJsonAsync<GetAll.Response>(cancellationToken);
