@@ -8,7 +8,7 @@
 
     <ItemGroup>
         <ProjectReference Include="..\AspireChat.Common\AspireChat.Common.csproj" />
-        <ProjectReference Include="..\AspireChat.ServiceDefaults\AspireChat.ServiceDefaults.csproj"/>
+        <ProjectReference Include="..\AspireChat.ServiceDefaults\AspireChat.ServiceDefaults.csproj" />
     </ItemGroup>
 
     <ItemGroup>
@@ -18,6 +18,10 @@
         <PackageReference Include="FastEndpoints" Version="6.0.0" />
         <PackageReference Include="FastEndpoints.Security" Version="6.0.0" />
         <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="9.0.4" />
+        <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="9.0.4">
+          <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+          <PrivateAssets>all</PrivateAssets>
+        </PackageReference>
     </ItemGroup>
 
 </Project>

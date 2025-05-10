@@ -22,7 +22,7 @@ public class ChatClient(AuthenticationService authService, HttpClient httpClient
         }
     }
 
-    public async Task<bool> SendMessageAsync(int groupId, string message, CancellationToken cancellationToken)
+    public async Task SendMessageAsync(int groupId, string message, CancellationToken cancellationToken)
     {
         try
         {
@@ -30,13 +30,10 @@ public class ChatClient(AuthenticationService authService, HttpClient httpClient
             var req = new Send.Request(groupId, message);
             var response = await httpClient.PostAsJsonAsync("/chats/send", req, cancellationToken);
             response.EnsureSuccessStatusCode();
-            var content = await response.Content.ReadFromJsonAsync<Send.Response>(cancellationToken);
-            return content?.Success ?? false;
         }
         catch (HttpRequestException ex)
         {
             logger.LogError(ex, "Send message failed");
-            return false;
         }
     }
 }
