@@ -23,13 +23,14 @@ public class LoginEndpoint(AppDbContext db) : Endpoint<Login.Request, Login.Resp
 
     public override async Task HandleAsync(Login.Request req, CancellationToken ct)
     {
-        var passwordHash = BCrypt.Net.BCrypt.HashPassword(req.Password);
-
         var user = await db.Users
-            .FirstOrDefaultAsync(x => x.Email.Equals(req.Email) && x.PasswordHash.Equals(passwordHash), ct);
+            .FirstOrDefaultAsync(x => x.Email == req.Email, ct);
 
-        if (user is null)
+        if (user is null || !BCrypt.Net.BCrypt.Verify(req.Password, user.PasswordHash))
+        {
             await SendNotFoundAsync(ct);
+            return;
+        }
 
         var token = JwtBearer.CreateToken(o =>
         {
@@ -41,9 +42,9 @@ public class LoginEndpoint(AppDbContext db) : Endpoint<Login.Request, Login.Resp
             ]);
         });
 
-        await SendAsync(new Login.Response(
-            token,
-            true
-        ), cancellation: ct);
+        await SendAsync(new Login.Response{
+            Token = token,
+            Success = true
+        }, cancellation: ct);
     }
 }

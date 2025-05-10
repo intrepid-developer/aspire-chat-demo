@@ -23,12 +23,13 @@ builder.AddAzureBlobClient("blobs");
 // Add FastEndpoints
 builder.Services.AddFastEndpoints();
 builder.Services
-    .AddAuthenticationJwtBearer(s =>
-        s.SigningKey = builder.Configuration.GetValue<string>("JWT_KEY")
-    )
+    .AddAuthenticationJwtBearer(_ => { })
     .AddAuthorization()
     .AddFastEndpoints();
 builder.Services.Configure<JwtCreationOptions>(o =>
+    o.SigningKey = builder.Configuration.GetValue<string>("JWT_KEY") ?? throw new ArgumentNullException()
+);
+builder.Services.Configure<JwtSigningOptions>(o =>
     o.SigningKey = builder.Configuration.GetValue<string>("JWT_KEY") ?? throw new ArgumentNullException()
 );
 

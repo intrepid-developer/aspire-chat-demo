@@ -4,6 +4,7 @@ using AspireChat.Web.Clients;
 using AspireChat.Web.Components;
 using AspireChat.Web.Services;
 using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Components.Authorization;
 using MudBlazor.Services;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -21,7 +22,7 @@ builder.Services.AddRazorComponents()
 
 builder.Services.AddHttpContextAccessor();
 
-builder.Services.AddScoped<AuthenticationService>();
+builder.Services.AddScoped<AuthenticationStateProvider,AuthProvider>();
 
 builder.Services.AddHttpClient<ChatClient>(client => { client.BaseAddress = new("https://api"); });
 builder.Services.AddHttpClient<GroupClient>(client => { client.BaseAddress = new("https://api"); });
@@ -35,6 +36,7 @@ builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationSc
     });
 
 builder.Services.AddAuthorization();
+builder.Services.AddCascadingAuthenticationState();
 
 var app = builder.Build();
 

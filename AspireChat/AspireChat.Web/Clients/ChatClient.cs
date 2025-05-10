@@ -1,15 +1,21 @@
 using AspireChat.Common.Chats;
 using AspireChat.Web.Services;
+using Microsoft.AspNetCore.Components.Authorization;
 
 namespace AspireChat.Web.Clients;
 
-public class ChatClient(AuthenticationService authService, HttpClient httpClient, ILogger<ChatClient> logger)
+public class ChatClient(
+    AuthenticationStateProvider authProvider,
+    HttpClient httpClient,
+    ILogger<ChatClient> logger)
 {
+    private AuthProvider AuthProvider => (AuthProvider)authProvider;
+
     public async Task<IEnumerable<GetAll.Dto>> GetAllChatsAsync(int groupId, CancellationToken cancellationToken)
     {
         try
         {
-            httpClient.DefaultRequestHeaders.Authorization = authService.AuthorizationHeaderValue();
+            httpClient.DefaultRequestHeaders.Authorization = await AuthProvider.AuthorizationHeaderValue();
             var response = await httpClient.GetAsync($"/chats/{groupId}", cancellationToken);
             response.EnsureSuccessStatusCode();
             var content = await response.Content.ReadFromJsonAsync<GetAll.Response>(cancellationToken);
@@ -26,8 +32,8 @@ public class ChatClient(AuthenticationService authService, HttpClient httpClient
     {
         try
         {
-            httpClient.DefaultRequestHeaders.Authorization = authService.AuthorizationHeaderValue();
-            var req = new Send.Request(groupId, message);
+            httpClient.DefaultRequestHeaders.Authorization = await AuthProvider.AuthorizationHeaderValue();
+            var req = new Send.Request { GroupId = groupId, Message = message };
             var response = await httpClient.PostAsJsonAsync($"/chats/{groupId}", req, cancellationToken);
             response.EnsureSuccessStatusCode();
         }

@@ -1,18 +1,15 @@
-using System.Security.Claims;
-using System.Text.Json;
 using AspireChat.Common.Users;
-using Microsoft.AspNetCore.Authentication;
-using Microsoft.AspNetCore.Authentication.Cookies;
-using AuthenticationService = AspireChat.Web.Services.AuthenticationService;
+using AspireChat.Web.Services;
+using Microsoft.AspNetCore.Components.Authorization;
 
 namespace AspireChat.Web.Clients;
 
 public class UserClient(
-    AuthenticationService authService,
+    AuthenticationStateProvider authProvider,
     HttpClient httpClient,
-    ILogger<UserClient> logger,
-    IHttpContextAccessor contextAccessor)
+    ILogger<UserClient> logger)
 {
+    private AuthProvider AuthProvider => (AuthProvider)authProvider;
     public async Task<bool> LoginAsync(Login.Request request, CancellationToken cancellationToken)
     {
         try
@@ -20,9 +17,10 @@ public class UserClient(
             var response = await httpClient.PostAsJsonAsync("/users/login", request, cancellationToken);
             response.EnsureSuccessStatusCode();
             var content = await response.Content.ReadFromJsonAsync<Login.Response>(cancellationToken);
-            authService.Token = content?.Token ?? string.Empty;
+            
+            var token = content?.Token ?? string.Empty;
 
-            await SignIn();
+            await AuthProvider.AuthenticateUser(token);
 
             return true;
         }
@@ -33,18 +31,6 @@ public class UserClient(
         }
     }
 
-    private async Task SignIn()
-    {
-        var claims = ParseClaimsFromJwt(authService.Token);
-        var identity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
-        var principal = new ClaimsPrincipal(identity);
-
-        await contextAccessor.HttpContext!.SignInAsync(principal);
-
-        // Optionally store token for future API calls
-        contextAccessor.HttpContext!.Response.Cookies.Append("access_token", authService.Token);
-    }
-
     public async Task<bool> RegisterAsync(Register.Request request, CancellationToken cancellationToken)
     {
         try
@@ -52,9 +38,10 @@ public class UserClient(
             var response = await httpClient.PostAsJsonAsync("/users/register", request, cancellationToken);
             response.EnsureSuccessStatusCode();
             var content = await response.Content.ReadFromJsonAsync<Register.Response>(cancellationToken);
-            authService.Token = content?.Token ?? string.Empty;
+            
+            var token = content?.Token ?? string.Empty;
 
-            await SignIn();
+            await AuthProvider.AuthenticateUser(token);
 
             return true;
         }
@@ -69,7 +56,7 @@ public class UserClient(
     {
         try
         {
-            httpClient.DefaultRequestHeaders.Authorization = authService.AuthorizationHeaderValue();
+            httpClient.DefaultRequestHeaders.Authorization = await AuthProvider.AuthorizationHeaderValue();
             var response = await httpClient.PutAsJsonAsync("/users/update", request, cancellationToken);
             response.EnsureSuccessStatusCode();
             var content = await response.Content.ReadFromJsonAsync<Update.Response>(cancellationToken);
@@ -86,7 +73,7 @@ public class UserClient(
     {
         try
         {
-            httpClient.DefaultRequestHeaders.Authorization = authService.AuthorizationHeaderValue();
+            httpClient.DefaultRequestHeaders.Authorization = await AuthProvider.AuthorizationHeaderValue();
             var response = await httpClient.GetAsync("/users/profile", cancellationToken);
             response.EnsureSuccessStatusCode();
             return await response.Content.ReadFromJsonAsync<GetProfile.Response>(cancellationToken);
@@ -102,7 +89,7 @@ public class UserClient(
     {
         try
         {
-            httpClient.DefaultRequestHeaders.Authorization = authService.AuthorizationHeaderValue();
+            httpClient.DefaultRequestHeaders.Authorization = await AuthProvider.AuthorizationHeaderValue();
             using var content = new MultipartFormDataContent();
             var stream = file.OpenReadStream(5 * 1024 * 1024); // 5MB limit
             content.Add(new StreamContent(stream), "Image", file.Name);
@@ -117,16 +104,5 @@ public class UserClient(
             logger.LogError(ex, "UploadImage failed");
             return null;
         }
-    }
-
-    private IEnumerable<Claim> ParseClaimsFromJwt(string? jwt)
-    {
-        var payload = jwt.Split('.')[1];
-        var jsonBytes = Convert.FromBase64String(payload.PadRight(payload.Length + (4 - payload.Length % 4) % 4, '='));
-        var keyValuePairs = JsonSerializer.Deserialize<Dictionary<string, object>>(jsonBytes);
-        if (keyValuePairs != null)
-            return keyValuePairs.Select(kvp => new Claim(kvp.Key, kvp.Value.ToString() ?? string.Empty));
-
-        return [];
     }
 }

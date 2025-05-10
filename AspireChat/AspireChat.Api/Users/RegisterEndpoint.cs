@@ -30,7 +30,7 @@ public class RegisterEndpoint(AppDbContext db) : Endpoint<Register.Request, Regi
             CreatedAt = DateTime.UtcNow,
             UpdatedAt = DateTime.UtcNow
         };
-        
+
         await db.Users.AddAsync(user, ct);
 
         await db.SaveChangesAsync(ct);
@@ -39,15 +39,16 @@ public class RegisterEndpoint(AppDbContext db) : Endpoint<Register.Request, Regi
         {
             o.ExpireAt = DateTime.UtcNow.AddHours(24);
             o.User.Claims.AddRange([
-                new Claim(ClaimTypes.Email, user!.Email),
+                new Claim(ClaimTypes.Email, user.Email),
                 new Claim(ClaimTypes.Name, user.Name),
                 new Claim(ClaimTypes.Sid, user.Id.ToString())
             ]);
         });
 
-        await SendAsync(new Register.Response(
-            token,
-            true
-        ), cancellation: ct);
+        await SendAsync(new Register.Response
+        {
+            Token = token,
+            Success = true
+        }, cancellation: ct);
     }
 }

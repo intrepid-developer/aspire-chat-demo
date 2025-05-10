@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace AspireChat.Api.Groups;
 
-public class GetAllEndpoint(AppDbContext db) : Endpoint<GetAll.Request, GetAll.Response>
+public class GetAllEndpoint(AppDbContext db) : EndpointWithoutRequest<GetAll.Response>
 {
     public override void Configure()
     {
@@ -17,13 +17,19 @@ public class GetAllEndpoint(AppDbContext db) : Endpoint<GetAll.Request, GetAll.R
             .Produces(StatusCodes.Status500InternalServerError));
     }
 
-    public override async Task HandleAsync(GetAll.Request req, CancellationToken ct)
+    public override async Task HandleAsync(CancellationToken ct)
     {
         var groups = await db.Groups
             .AsNoTracking()
-            .Select(group => new GetAll.Dto(group.Id, group.Name, group.CreatedAt, group.UpdatedAt))
+            .Select(group => new GetAll.Dto
+            {
+                Id = group.Id,
+                Name = group.Name,
+                CreatedAt = group.CreatedAt,
+                UpdatedAt = group.UpdatedAt
+            })
             .ToListAsync(ct);
-        
-        await SendOkAsync(new GetAll.Response(groups), ct);
+
+        await SendOkAsync(new GetAll.Response { Groups = groups }, ct);
     }
 }

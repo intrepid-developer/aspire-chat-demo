@@ -49,12 +49,10 @@
     private List<GetAll.Dto> _chats = [];
     private string _newMessage = "";
     private bool _isSending;
-    private Timer? _pollingTimer;
 
     protected override async Task OnInitializedAsync()
     {
         await LoadChatsAsync();
-        _pollingTimer = new Timer(async void (_) => await PollChatsAsync(), null, 2000, 2000);
     }
 
     private async Task LoadChatsAsync()
@@ -69,14 +67,6 @@
         {
             Logger.LogError(ex, "Failed to load chats");
         }
-    }
-
-    private async Task PollChatsAsync()
-    {
-        await InvokeAsync(async () =>
-        {
-            await LoadChatsAsync();
-        });
     }
 
     private async Task SendMessage()

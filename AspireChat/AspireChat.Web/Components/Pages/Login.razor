@@ -34,8 +34,14 @@
                 {
                     <MudAlert Severity="Severity.Error" Dense="true" Class="mb-2">@_error</MudAlert>
                 }
-                <MudButton OnClick="@(_isRegister ? HandleRegister : HandleLogin)" Disabled="_loading"
-                           Variant="Variant.Filled" Color="Color.Primary" Class="mt-2" FullWidth="true">
+                <MudButton
+                    OnClick="@(_isRegister ? HandleRegister : HandleLogin)"
+                    ButtonType="ButtonType.Button"
+                    Disabled="_loading"
+                    Variant="Variant.Filled"
+                    Color="Color.Primary"
+                    Class="mt-2"
+                    FullWidth="true">
                     @if (_loading)
                     {
                         <MudProgressCircular Indeterminate="true" Size="Size.Medium" Class="me-2"/>
@@ -82,7 +88,7 @@
         try
         {
             var success = await UserClient.LoginAsync(
-                new Common.Users.Login.Request(_email, _password), CancellationToken.None);
+                new Common.Users.Login.Request { Email = _email, Password = _password }, CancellationToken.None);
             if (success)
             {
                 Navigation.NavigateTo(ReturnUrl ?? "/");
@@ -119,7 +125,7 @@
         try
         {
             var success = await UserClient.RegisterAsync(
-                new Common.Users.Register.Request(_email, _name, _password), CancellationToken.None);
+                new Common.Users.Register.Request { Email = _email, Name = _name, Password = _password }, CancellationToken.None);
             if (success)
             {
                 Navigation.NavigateTo(ReturnUrl ?? "/");

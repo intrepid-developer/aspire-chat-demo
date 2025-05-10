@@ -4,6 +4,13 @@ namespace AspireChat.Common.Users;
 
 public class UploadImage
 {
-    public record Request(IFormFile Image, string ImageName);
-    public record Response(string ImageUrl);
+    public class Request
+    {
+        public IFormFile Image { get; set; }
+        public string ImageName { get; set; }
+    }
+    public class Response
+    {
+        public string ImageUrl { get; set; }
+    }
 }

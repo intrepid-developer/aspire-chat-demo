@@ -24,14 +24,20 @@ public class GetAllEndpoint(AppDbContext db) : Endpoint<GetAll.Request, GetAll.R
         {
             var chats = await db.Chats
                 .AsNoTracking()
-                .Select(chat => new GetAll.Dto(chat.Id, chat.Name, chat.Message, chat.UserId))
+                .Select(chat => new GetAll.Dto
+                {
+                    Id = chat.Id,
+                    Name = chat.Name,
+                    Message = chat.Message,
+                    UserId = chat.UserId
+                })
                 .ToListAsync(ct);
 
-            await db.SaveChangesAsync(ct);
-
-            await SendOkAsync(new GetAll.Response(chats), ct);
+            await SendOkAsync(new GetAll.Response { Chats = chats }, ct);
         }
-
-        await SendErrorsAsync(StatusCodes.Status400BadRequest, ct);
+        else
+        {
+            await SendErrorsAsync(StatusCodes.Status400BadRequest, ct);
+        }
     }
 }

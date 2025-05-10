@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace AspireChat.Api.Users;
 
-public class GetProfileEndpoint(AppDbContext db) : Endpoint<GetProfile.Request, GetProfile.Response>
+public class GetProfileEndpoint(AppDbContext db) : EndpointWithoutRequest<GetProfile.Response>
 {
     public override void Configure()
     {
@@ -17,7 +17,7 @@ public class GetProfileEndpoint(AppDbContext db) : Endpoint<GetProfile.Request, 
             .Produces(StatusCodes.Status500InternalServerError));
     }
 
-    public override async Task HandleAsync(GetProfile.Request req, CancellationToken ct)
+    public override async Task HandleAsync(CancellationToken ct)
     {
         var userId = User.FindFirst(ClaimTypes.Sid)?.Value;
         if (userId is null)
@@ -35,6 +35,13 @@ public class GetProfileEndpoint(AppDbContext db) : Endpoint<GetProfile.Request, 
         }
 
         await SendOkAsync(
-            new GetProfile.Response(user.Name, user.Email, user.ProfileImageUrl, user.CreatedAt, user.UpdatedAt), ct);
+            new GetProfile.Response
+            {
+                Name = user.Name,
+                Email = user.Email,
+                ProfileImageUrl = user.ProfileImageUrl,
+                CreatedAt = user.CreatedAt,
+                UpdatedAt = user.UpdatedAt
+            }, ct);
     }
 }

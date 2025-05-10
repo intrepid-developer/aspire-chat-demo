@@ -2,6 +2,15 @@ namespace AspireChat.Common.Chats;
 
 public class Send
 {
-    public record Request(int GroupId, string Message);
-    public record Response(bool Success);
+    public class Request
+    {
+        public int GroupId { get; set; }
+        public string Message { get; set; }
+        public Request() { }
+    }
+    public class Response
+    {
+        public bool Success { get; set; }
+        public Response() { }
+    }
 }

@@ -27,7 +27,10 @@ public class UploadImageEndpoint(BlobServiceClient blobService) : Endpoint<Uploa
 
         await using var stream = req.Image.OpenReadStream();
         await blobClient.UploadAsync(stream, overwrite: true, cancellationToken: ct);
-        
-        await SendOkAsync(new UploadImage.Response(blobClient.Uri.ToString()), ct);
+
+        await SendOkAsync(new UploadImage.Response
+        {
+            ImageUrl = blobClient.Uri.ToString()
+        }, ct);
     }
 }

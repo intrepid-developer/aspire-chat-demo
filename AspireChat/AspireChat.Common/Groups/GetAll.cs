@@ -2,9 +2,20 @@ namespace AspireChat.Common.Groups;
 
 public sealed class GetAll
 {
-    public record Response(List<Dto> Groups);
+    public class Response
+    {
+        public List<Dto> Groups { get; set; } = [];
+    }
 
-    public record Request;
+    public class Request
+    {
+    }
 
-    public record Dto(int Id, string Name, DateTime CreatedAt, DateTime UpdatedAt);
+    public class Dto
+    {
+        public int Id { get; set; }
+        public string Name { get; set; } = string.Empty;
+        public DateTime CreatedAt { get; set; }
+        public DateTime UpdatedAt { get; set; }
+    }
 }

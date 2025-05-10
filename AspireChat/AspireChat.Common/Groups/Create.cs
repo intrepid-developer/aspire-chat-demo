@@ -2,6 +2,14 @@ namespace AspireChat.Common.Groups;
 
 public class Create
 {
-    public record Request(string Name);
-    public record Response(bool Success);
+    public class Request
+    {
+        public string Name { get; set; }
+        public Request() { }
+    }
+    public class Response
+    {
+        public bool Success { get; set; }
+        public Response() { }
+    }
 }

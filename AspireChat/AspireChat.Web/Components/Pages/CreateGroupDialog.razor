@@ -34,7 +34,7 @@
             return;
         }
 
-        var success = await GroupClient.CreateGroupAsync(new AspireChat.Common.Groups.Create.Request(_groupName), CancellationToken.None);
+        var success = await GroupClient.CreateGroupAsync(new AspireChat.Common.Groups.Create.Request { Name = _groupName }, CancellationToken.None);
         if (success)
         {
             MudDialog.Close();
@@ -51,4 +51,5 @@
     {
         MudDialog.Cancel();
     }
+
 }
