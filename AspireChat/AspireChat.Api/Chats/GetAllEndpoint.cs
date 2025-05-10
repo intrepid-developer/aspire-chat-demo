@@ -22,14 +22,14 @@ public class GetAllEndpoint(AppDbContext db) : Endpoint<GetAll.Request, GetAll.R
     {
         if (int.TryParse(User.FindFirst(ClaimTypes.Sid)?.Value, out var id))
         {
-            var groups = await db.Groups
+            var chats = await db.Chats
                 .AsNoTracking()
-                .Select(g => new GetAll.Dto(g.Id, g.Name))
+                .Select(chat => new GetAll.Dto(chat.Id, chat.CreatedBy.Name, chat.Message))
                 .ToListAsync(ct);
 
             await db.SaveChangesAsync(ct);
 
-            await SendOkAsync(new GetAll.Response(groups), ct);
+            await SendOkAsync(new GetAll.Response(chats), ct);
         }
 
         await SendErrorsAsync(StatusCodes.Status400BadRequest, ct);

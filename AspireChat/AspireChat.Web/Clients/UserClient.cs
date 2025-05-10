@@ -82,6 +82,43 @@ public class UserClient(
         }
     }
 
+    public async Task<GetProfile.Response?> GetProfileAsync(CancellationToken cancellationToken = default)
+    {
+        try
+        {
+            httpClient.DefaultRequestHeaders.Authorization = authService.AuthorizationHeaderValue();
+            var response = await httpClient.GetAsync("/profile", cancellationToken);
+            response.EnsureSuccessStatusCode();
+            return await response.Content.ReadFromJsonAsync<GetProfile.Response>(cancellationToken);
+        }
+        catch (HttpRequestException ex)
+        {
+            logger.LogError(ex, "GetProfile failed");
+            return null;
+        }
+    }
+
+    public async Task<string?> UploadImageAsync(Microsoft.AspNetCore.Components.Forms.IBrowserFile file, CancellationToken cancellationToken = default)
+    {
+        try
+        {
+            httpClient.DefaultRequestHeaders.Authorization = authService.AuthorizationHeaderValue();
+            using var content = new MultipartFormDataContent();
+            var stream = file.OpenReadStream(5 * 1024 * 1024); // 5MB limit
+            content.Add(new StreamContent(stream), "Image", file.Name);
+            content.Add(new StringContent(file.Name), "ImageName");
+            var response = await httpClient.PostAsync("/profile/upload-image", content, cancellationToken);
+            response.EnsureSuccessStatusCode();
+            var result = await response.Content.ReadFromJsonAsync<UploadImage.Response>(cancellationToken);
+            return result?.ImageUrl;
+        }
+        catch (HttpRequestException ex)
+        {
+            logger.LogError(ex, "UploadImage failed");
+            return null;
+        }
+    }
+
     private IEnumerable<Claim> ParseClaimsFromJwt(string jwt)
     {
         var payload = jwt.Split('.')[1];

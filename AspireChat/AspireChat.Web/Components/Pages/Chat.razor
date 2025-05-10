@@ -1,7 +1,109 @@
-@page "/chat"
+@page "/chat/{groupId:int}"
+@using AspireChat.Common.Chats
 @attribute [Authorize]
-<h3>Chat</h3>
+@inject Clients.ChatClient ChatClient
+@inject ILogger<Chat> Logger
+
+<MudPaper Class="pa-4" Style="height:70vh; display:flex; flex-direction:column;">
+    <MudText Typo="Typo.h5" Class="mb-2">Chat</MudText>
+    <MudDivider />
+    <MudStack Spacing="2" Class="overflow-y-auto flex-grow-1" Style="min-height:0;">
+        @if (!_chats.Any())
+        {
+            <MudText>No messages yet.</MudText>
+        }
+        else
+        {
+            foreach (var chat in _chats.OrderBy(c => c.Id))
+            {
+                <MudPaper Class="d-flex align-items-start mb-2" Elevation="1" Style="padding:8px;">
+                    <MudAvatar Size="Size.Medium" Class="me-2">
+                        <MudImage Src="https://placehold.co/40x40"></MudImage>
+                    </MudAvatar>
+                    <MudStack>
+                        <MudText Typo="Typo.subtitle2">@chat.Name</MudText>
+                        <MudPaper Class="pa-2" Style="background:#f5f5f5; border-radius:12px; min-width:120px;">
+                            <MudText>@chat.Message</MudText>
+                        </MudPaper>
+                    </MudStack>
+                </MudPaper>
+            }
+        }
+    </MudStack>
+    <MudDivider Class="mt-2 mb-2" />
+    <MudStack Row="true" Spacing="1" AlignItems="AlignItems.Center">
+        <MudTextField @bind-Value="_newMessage" Placeholder="Type a message..." Variant="Variant.Outlined" Class="flex-grow-1"
+                      Adornment="Adornment.End" AdornmentIcon="@Icons.Material.Filled.Send"
+                      OnAdornmentClick="SendMessage" Disabled="@_isSending"
+                      OnKeyDown="HandleKeyDown" />
+        <MudButton Variant="Variant.Filled" Color="Color.Primary" Disabled="@_isSending || string.IsNullOrWhiteSpace(_newMessage)" OnClick="SendMessage">
+            Send
+        </MudButton>
+    </MudStack>
+</MudPaper>
 
 @code {
-    
+    [Parameter]
+    public int GroupId { get; set; }
+
+    private List<GetAll.Dto> _chats = [];
+    private string _newMessage = "";
+    private bool _isSending;
+    private Timer? _pollingTimer;
+
+    protected override async Task OnInitializedAsync()
+    {
+        await LoadChatsAsync();
+        _pollingTimer = new Timer(async void (_) => await PollChatsAsync(), null, 2000, 2000);
+    }
+
+    private async Task LoadChatsAsync()
+    {
+        try
+        {
+            var result = await ChatClient.GetAllChatsAsync(GroupId, CancellationToken.None);
+            _chats = result.ToList();
+            StateHasChanged();
+        }
+        catch (Exception ex)
+        {
+            Logger.LogError(ex, "Failed to load chats");
+        }
+    }
+
+    private async Task PollChatsAsync()
+    {
+        await InvokeAsync(async () =>
+        {
+            await LoadChatsAsync();
+        });
+    }
+
+    private async Task SendMessage()
+    {
+        if (string.IsNullOrWhiteSpace(_newMessage)) return;
+        _isSending = true;
+        try
+        {
+            await ChatClient.SendMessageAsync(GroupId, _newMessage, CancellationToken.None);
+            _newMessage = "";
+            await LoadChatsAsync();
+        }
+        catch (Exception ex)
+        {
+            Logger.LogError(ex, "Failed to send message");
+        }
+        finally
+        {
+            _isSending = false;
+        }
+    }
+
+    private async Task HandleKeyDown(KeyboardEventArgs e)
+    {
+        if (e.Key == "Enter" && !_isSending && !string.IsNullOrWhiteSpace(_newMessage))
+        {
+            await SendMessage();
+        }
+    }
 }

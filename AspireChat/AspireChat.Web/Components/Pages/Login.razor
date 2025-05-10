@@ -1,16 +1,151 @@
 @page "/Login"
 @inject NavigationManager Navigation
-<h3>Login</h3>
+@inject Clients.UserClient UserClient
 
+<MudPaper Class="d-flex flex-column align-items-center justify-content-center" Style="min-height: 80vh;">
+    <MudCard Style="width: 350px;">
+        <MudCardContent>
+            <MudText Typo="Typo.h5" Align="Align.Center" Class="mb-4">
+                @(_isRegister ? "Register" : "Login")
+            </MudText>
+            <MudForm @ref="_form">
+                @if (_isRegister)
+                {
+                    <MudTextField @bind-Value="_email" Label="Email" Required="true" For="@(() => _email)"
+                                  Variant="Variant.Filled" Class="mb-2"/>
+                    <MudTextField @bind-Value="_username" Label="Username" Required="true" For="@(() => _username)"
+                                  Variant="Variant.Filled" Class="mb-2"/>
+                    <MudTextField @bind-Value="_password" Label="Password" InputType="InputType.Password"
+                                  Required="true"
+                                  For="@(() => _password)" Variant="Variant.Filled" Class="mb-2"/>
+                    <MudTextField @bind-Value="_confirmPassword" Label="Confirm Password" InputType="InputType.Password"
+                                  Required="true" For="@(() => _confirmPassword)" Variant="Variant.Filled"
+                                  Class="mb-2"/>
+                }
+                else
+                {
+                    <MudTextField @bind-Value="_email" Label="Email" Required="true" For="@(() => _email)"
+                                  Variant="Variant.Filled" Class="mb-2"/>
+                    <MudTextField @bind-Value="_password" Label="Password" InputType="InputType.Password"
+                                  Required="true"
+                                  For="@(() => _password)" Variant="Variant.Filled" Class="mb-2"/>
+                }
+                @if (!string.IsNullOrEmpty(_error))
+                {
+                    <MudAlert Severity="Severity.Error" Dense="true" Class="mb-2">@_error</MudAlert>
+                }
+                <MudButton OnClick="@(_isRegister ? HandleRegister : HandleLogin)" Disabled="_loading"
+                           Variant="Variant.Filled" Color="Color.Primary" Class="mt-2" FullWidth="true">
+                    @if (_loading)
+                    {
+                        <MudProgressCircular Indeterminate="true" Size="Size.Medium" Class="me-2"/>
+                        <MudText>@(_isRegister ? "Registering..." : "Logging in...")</MudText>
+                    }
+                    else
+                    {
+                        <MudText>@(_isRegister ? "Register" : "Login")</MudText>
+                    }
+                </MudButton>
+            </MudForm>
+        </MudCardContent>
+        <MudCardActions Class="d-flex justify-content-center">
+            <MudText Class="me-1">
+                @(_isRegister ? "Already have an account?" : "Don't have an account?")
+            </MudText>
+            <MudButton Variant="Variant.Text" Color="Color.Secondary" OnClick="ToggleMode" Disabled="_loading">
+                @(_isRegister ? "Login" : "Register")
+            </MudButton>
+        </MudCardActions>
+    </MudCard>
+</MudPaper>
 
 @code {
-    [Parameter]
-    [SupplyParameterFromQuery]
-    public string? returnUrl { get; set; }
+    [Parameter] [SupplyParameterFromQuery] public string? ReturnUrl { get; set; }
 
-    private void HandleLogin()
+    private MudForm? _form;
+    private string _email = string.Empty;
+    private string _username = string.Empty;
+    private string _password = string.Empty;
+    private string _confirmPassword = string.Empty;
+    private string _error = string.Empty;
+    private bool _loading;
+    private bool _isRegister = false;
+
+    private async Task HandleLogin()
     {
-        // After successful login:
-        Navigation.NavigateTo(returnUrl ?? "/");
+        _error = string.Empty;
+        await _form?.Validate()!;
+        if (_form is not null && !_form.IsValid)
+            return;
+
+        _loading = true;
+        try
+        {
+            var success = await UserClient.LoginAsync(
+                new Common.Users.Login.Request(_email, _password), CancellationToken.None);
+            if (success)
+            {
+                Navigation.NavigateTo(ReturnUrl ?? "/");
+            }
+            else
+            {
+                _error = "Invalid email or password.";
+            }
+        }
+        catch
+        {
+            _error = "An error occurred during login.";
+        }
+        finally
+        {
+            _loading = false;
+        }
     }
+
+    private async Task HandleRegister()
+    {
+        _error = string.Empty;
+        await _form?.Validate()!;
+        if (_form is not null && !_form.IsValid)
+            return;
+
+        if (_password != _confirmPassword)
+        {
+            _error = "Passwords do not match.";
+            return;
+        }
+
+        _loading = true;
+        try
+        {
+            var success = await UserClient.RegisterAsync(
+                new Common.Users.Register.Request(_email, _username, _password), CancellationToken.None);
+            if (success)
+            {
+                Navigation.NavigateTo(ReturnUrl ?? "/");
+            }
+            else
+            {
+                _error = "Registration failed.";
+            }
+        }
+        catch
+        {
+            _error = "An error occurred during registration.";
+        }
+        finally
+        {
+            _loading = false;
+        }
+    }
+
+    private void ToggleMode()
+    {
+        _isRegister = !_isRegister;
+        _error = string.Empty;
+        _form?.ResetAsync().Wait();
+        _password = string.Empty;
+        _confirmPassword = string.Empty;
+    }
+
 }

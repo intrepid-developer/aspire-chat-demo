@@ -1,7 +1,64 @@
 @page "/groups"
+@using AspireChat.Web.Clients
 @attribute [Authorize]
-<h3>Groups</h3>
+@inject GroupClient GroupClient
+@inject NavigationManager Navigation
+@inject IDialogService DialogService
+
+<MudPaper Class="pa-4">
+    <MudStack Row="true" AlignItems="AlignItems.Center" Justify="Justify.SpaceBetween">
+        <MudText Typo="Typo.h5">Groups</MudText>
+        <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="OpenCreateGroupDialog">
+            <MudIcon Icon="@Icons.Material.Filled.Add" /> Add Group
+        </MudButton>
+    </MudStack>
+    <MudDivider Class="my-2" />
+    <MudTable Items="_groups" Dense="true" Hover="true">
+        <HeaderContent>
+            <MudTh>Name</MudTh>
+            <MudTh>Created</MudTh>
+            <MudTh></MudTh>
+        </HeaderContent>
+        <RowTemplate>
+            <MudTd>@context.Name</MudTd>
+            <MudTd>@context.CreatedAt.ToLocalTime().ToString("g")</MudTd>
+            <MudTd>
+                <MudButton Variant="Variant.Outlined" Color="Color.Secondary" OnClick="@(() => JoinGroup(context.Id))">
+                    Join
+                </MudButton>
+            </MudTd>
+        </RowTemplate>
+    </MudTable>
+</MudPaper>
 
 @code {
-    
+    private List<AspireChat.Common.Groups.GetAll.Dto> _groups = [];
+
+    protected override async Task OnInitializedAsync()
+    {
+        await LoadGroupsAsync();
+    }
+
+    private async Task LoadGroupsAsync()
+    {
+        var groups = await GroupClient.GetAllGroupsAsync(CancellationToken.None);
+        _groups = groups.ToList();
+    }
+
+    private void JoinGroup(int groupId)
+    {
+        Navigation.NavigateTo($"/chat/{groupId}");
+    }
+
+    private async Task OpenCreateGroupDialog()
+    {
+        var parameters = new DialogParameters();
+        var options = new DialogOptions { CloseButton = true, MaxWidth = MaxWidth.Small, FullWidth = true };
+        var dialog = await DialogService.ShowAsync<CreateGroupDialog>("Create Group", parameters, options);
+        var result = await dialog.Result;
+        if (!result?.Canceled ?? false)
+        {
+            await LoadGroupsAsync();
+        }
+    }
 }
