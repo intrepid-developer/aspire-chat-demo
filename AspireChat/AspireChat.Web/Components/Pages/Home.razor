@@ -2,7 +2,7 @@
 
 <PageTitle>Home</PageTitle>
 
-<MudPaper Class="pa-6 mx-auto" MaxWidth="600px" Elevation="4">
+<MudPaper Class="pa-6" Elevation="0">
     <MudStack Spacing="2">
         <MudText Typo="Typo.h3" GutterBottom="true" Color="Color.Primary">
             Aspire Chat Demo
@@ -19,5 +19,13 @@
         <MudText Typo="Typo.body2">
             Explore the code, try out the chat features, and check out the accompanying blog posts for a deep dive into the architecture and implementation details.
         </MudText>
+
+        <AuthorizeView>
+            <NotAuthorized>
+                <MudButton Variant="Variant.Filled" Color="Color.Primary" Href="/login" StartIcon="@Icons.Material.Filled.Login">
+                    Login to get started
+                </MudButton>
+            </NotAuthorized>
+        </AuthorizeView>
     </MudStack>
 </MudPaper>

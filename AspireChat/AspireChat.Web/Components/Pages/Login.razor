@@ -2,8 +2,8 @@
 @inject NavigationManager Navigation
 @inject Clients.UserClient UserClient
 
-<MudPaper Class="d-flex flex-column align-items-center justify-content-center" Style="min-height: 80vh;">
-    <MudCard Style="width: 350px;">
+<MudPaper Elevation="0">
+    <MudCard Outlined="true" Elevation="0">
         <MudCardContent>
             <MudText Typo="Typo.h5" Align="Align.Center" Class="mb-4">
                 @(_isRegister ? "Register" : "Login")
@@ -69,7 +69,7 @@
     private string _confirmPassword = string.Empty;
     private string _error = string.Empty;
     private bool _loading;
-    private bool _isRegister = false;
+    private bool _isRegister;
 
     private async Task HandleLogin()
     {

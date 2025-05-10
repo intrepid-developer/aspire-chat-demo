@@ -5,5 +5,8 @@
             <MudNavLink Icon="@Icons.Material.Filled.Chat" Href="/groups" Match="NavLinkMatch.Prefix">Chat Groups</MudNavLink>
             <MudNavLink Icon="@Icons.Material.Filled.Person" Href="/profile" Match="NavLinkMatch.Prefix">Profile</MudNavLink>
         </Authorized>
+        <NotAuthorized>
+            <MudNavLink Icon="@Icons.Material.Filled.Login" Href="/login" Match="NavLinkMatch.Prefix">Login</MudNavLink>
+        </NotAuthorized>
     </AuthorizeView>
 </MudNavMenu>
