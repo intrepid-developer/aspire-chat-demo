@@ -17,7 +17,7 @@ public class UserClient(
     {
         try
         {
-            var response = await httpClient.PostAsJsonAsync("/login", request, cancellationToken);
+            var response = await httpClient.PostAsJsonAsync("/users/login", request, cancellationToken);
             response.EnsureSuccessStatusCode();
             var content = await response.Content.ReadFromJsonAsync<Login.Response>(cancellationToken);
             authService.Token = content?.Token ?? string.Empty;
@@ -49,7 +49,7 @@ public class UserClient(
     {
         try
         {
-            var response = await httpClient.PostAsJsonAsync("/register", request, cancellationToken);
+            var response = await httpClient.PostAsJsonAsync("/users/register", request, cancellationToken);
             response.EnsureSuccessStatusCode();
             var content = await response.Content.ReadFromJsonAsync<Register.Response>(cancellationToken);
             authService.Token = content?.Token ?? string.Empty;
@@ -70,7 +70,7 @@ public class UserClient(
         try
         {
             httpClient.DefaultRequestHeaders.Authorization = authService.AuthorizationHeaderValue();
-            var response = await httpClient.PutAsJsonAsync("/update", request, cancellationToken);
+            var response = await httpClient.PutAsJsonAsync("/users/update", request, cancellationToken);
             response.EnsureSuccessStatusCode();
             var content = await response.Content.ReadFromJsonAsync<Update.Response>(cancellationToken);
             return content?.Success ?? false;
@@ -87,7 +87,7 @@ public class UserClient(
         try
         {
             httpClient.DefaultRequestHeaders.Authorization = authService.AuthorizationHeaderValue();
-            var response = await httpClient.GetAsync("/profile", cancellationToken);
+            var response = await httpClient.GetAsync("/users/profile", cancellationToken);
             response.EnsureSuccessStatusCode();
             return await response.Content.ReadFromJsonAsync<GetProfile.Response>(cancellationToken);
         }
@@ -107,7 +107,7 @@ public class UserClient(
             var stream = file.OpenReadStream(5 * 1024 * 1024); // 5MB limit
             content.Add(new StreamContent(stream), "Image", file.Name);
             content.Add(new StringContent(file.Name), "ImageName");
-            var response = await httpClient.PostAsync("/profile/upload-image", content, cancellationToken);
+            var response = await httpClient.PostAsync("/users/upload-image", content, cancellationToken);
             response.EnsureSuccessStatusCode();
             var result = await response.Content.ReadFromJsonAsync<UploadImage.Response>(cancellationToken);
             return result?.ImageUrl;
@@ -119,7 +119,7 @@ public class UserClient(
         }
     }
 
-    private IEnumerable<Claim> ParseClaimsFromJwt(string jwt)
+    private IEnumerable<Claim> ParseClaimsFromJwt(string? jwt)
     {
         var payload = jwt.Split('.')[1];
         var jsonBytes = Convert.FromBase64String(payload.PadRight(payload.Length + (4 - payload.Length % 4) % 4, '='));

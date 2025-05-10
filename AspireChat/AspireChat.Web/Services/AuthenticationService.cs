@@ -4,11 +4,11 @@ namespace AspireChat.Web.Services;
 
 public class AuthenticationService(IHttpContextAccessor httpContextAccessor)
 {
-    public string Token { get; set; } = string.Empty;
+    public string? Token { get; set; } = string.Empty;
 
     public AuthenticationHeaderValue? AuthorizationHeaderValue()
     {
-        var token = httpContextAccessor.HttpContext?.Request.Cookies["access_token"];
-        return new AuthenticationHeaderValue("Bearer", token);
+        Token = httpContextAccessor.HttpContext?.Request.Cookies["access_token"];
+        return new AuthenticationHeaderValue("Bearer", Token);
     }
 }

@@ -28,7 +28,7 @@ public class ChatClient(AuthenticationService authService, HttpClient httpClient
         {
             httpClient.DefaultRequestHeaders.Authorization = authService.AuthorizationHeaderValue();
             var req = new Send.Request(groupId, message);
-            var response = await httpClient.PostAsJsonAsync("/chats/send", req, cancellationToken);
+            var response = await httpClient.PostAsJsonAsync($"/chats/{groupId}", req, cancellationToken);
             response.EnsureSuccessStatusCode();
         }
         catch (HttpRequestException ex)

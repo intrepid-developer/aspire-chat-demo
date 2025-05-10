@@ -13,7 +13,7 @@
                 {
                     <MudTextField @bind-Value="_email" Label="Email" Required="true" For="@(() => _email)"
                                   Variant="Variant.Filled" Class="mb-2"/>
-                    <MudTextField @bind-Value="_username" Label="Username" Required="true" For="@(() => _username)"
+                    <MudTextField @bind-Value="_name" Label="Name" Required="true" For="@(() => _name)"
                                   Variant="Variant.Filled" Class="mb-2"/>
                     <MudTextField @bind-Value="_password" Label="Password" InputType="InputType.Password"
                                   Required="true"
@@ -64,7 +64,7 @@
 
     private MudForm? _form;
     private string _email = string.Empty;
-    private string _username = string.Empty;
+    private string _name = string.Empty;
     private string _password = string.Empty;
     private string _confirmPassword = string.Empty;
     private string _error = string.Empty;
@@ -119,7 +119,7 @@
         try
         {
             var success = await UserClient.RegisterAsync(
-                new Common.Users.Register.Request(_email, _username, _password), CancellationToken.None);
+                new Common.Users.Register.Request(_email, _name, _password), CancellationToken.None);
             if (success)
             {
                 Navigation.NavigateTo(ReturnUrl ?? "/");

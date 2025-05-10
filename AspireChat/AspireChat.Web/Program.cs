@@ -19,7 +19,9 @@ builder.Services.AddMudServices();
 builder.Services.AddRazorComponents()
     .AddInteractiveServerComponents();
 
-builder.Services.AddSingleton<AuthenticationService>();
+builder.Services.AddHttpContextAccessor();
+
+builder.Services.AddScoped<AuthenticationService>();
 
 builder.Services.AddHttpClient<ChatClient>(client => { client.BaseAddress = new("https://api"); });
 builder.Services.AddHttpClient<GroupClient>(client => { client.BaseAddress = new("https://api"); });

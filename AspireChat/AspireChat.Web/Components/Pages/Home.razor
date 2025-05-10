@@ -2,6 +2,22 @@
 
 <PageTitle>Home</PageTitle>
 
-<h1>Hello, world!</h1>
+<MudPaper Class="pa-6 mx-auto" MaxWidth="600px" Elevation="4">
+    <MudStack Spacing="2">
+        <MudText Typo="Typo.h3" GutterBottom="true" Color="Color.Primary">
+            Aspire Chat Demo
+        </MudText>
 
-Welcome to your new app.
+        <MudText Typo="Typo.body1">
+            Welcome to the Aspire Chat Demo app! This application demonstrates real-time chat functionality built with <b>Blazor</b> and powered by <b>.NET Aspire</b>.
+        </MudText>
+
+        <MudAlert Severity="Severity.Info" Variant="Variant.Filled" Dense="true">
+            This project is part of my <b>blog series</b> on building modern distributed applications using <b>Aspire</b> and <b>Blazor</b>.
+        </MudAlert>
+
+        <MudText Typo="Typo.body2">
+            Explore the code, try out the chat features, and check out the accompanying blog posts for a deep dive into the architecture and implementation details.
+        </MudText>
+    </MudStack>
+</MudPaper>
