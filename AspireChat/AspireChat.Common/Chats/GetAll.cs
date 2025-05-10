@@ -6,5 +6,5 @@ public sealed class GetAll
 
     public record Request;
 
-    public record Dto(int Id, string Name, string Message);
+    public record Dto(int Id, string Name, string Message, int UserId);
 }

@@ -24,7 +24,7 @@ public class GetAllEndpoint(AppDbContext db) : Endpoint<GetAll.Request, GetAll.R
         {
             var chats = await db.Chats
                 .AsNoTracking()
-                .Select(chat => new GetAll.Dto(chat.Id, chat.CreatedBy.Name, chat.Message))
+                .Select(chat => new GetAll.Dto(chat.Id, chat.Name, chat.Message, chat.UserId))
                 .ToListAsync(ct);
 
             await db.SaveChangesAsync(ct);

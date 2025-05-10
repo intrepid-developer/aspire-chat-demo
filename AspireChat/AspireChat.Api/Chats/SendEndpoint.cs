@@ -25,11 +25,11 @@ public class SendEndpoint(AppDbContext db) : Endpoint<Send.Request, Send.Respons
             var user = await db.Users.FirstAsync(x => x.Id == id, ct);
             var group = await db.Groups
                 .FirstAsync(x => x.Id == req.GroupId, ct);
-            user.Chats.Add(new Chat
+            group.Chats.Add(new Chat
             {
                 Message = req.Message,
-                CreatedById = id,
-                CreatedBy = user,
+                Name = user.Name,
+                UserId = user.Id,
                 Group = group
             });
 

@@ -9,7 +9,4 @@ public class User
     public string? ProfileImageUrl { get; set; }
     public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
     public DateTime UpdatedAt { get; set; } = DateTime.UtcNow;
-    
-    public virtual ICollection<Chat> Chats { get; set; } = [];
-    public virtual ICollection<Group> Groups { get; set; } = [];
 }

@@ -22,21 +22,13 @@ public class CreateEndpoint(AppDbContext db) : Endpoint<Create.Request, Create.R
 
     public override async Task HandleAsync(Create.Request req, CancellationToken ct)
     {
-        if (int.TryParse(User.FindFirst(ClaimTypes.Sid)?.Value, out var id))
+        await db.Groups.AddAsync(new Group
         {
-            var user = await db.Users.FirstAsync(x => x.Id == id, ct);
-            user.Groups.Add(new Group
-            {
-                Name = req.Name,
-                CreatedById = id,
-                CreatedBy = user
-            });
-            
-            await db.SaveChangesAsync(ct);
-            
-            await SendOkAsync(new Create.Response(true), ct);
-        }
+            Name = req.Name
+        }, ct);
 
-        await SendErrorsAsync(StatusCodes.Status400BadRequest, ct);
+        await db.SaveChangesAsync(ct);
+
+        await SendOkAsync(new Create.Response(true), ct);
     }
 }

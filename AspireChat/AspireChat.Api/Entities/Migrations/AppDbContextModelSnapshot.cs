@@ -33,9 +33,6 @@ namespace AspireChat.Api.Entities.Migrations
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2");
 
-                    b.Property<int>("CreatedById")
-                        .HasColumnType("int");
-
                     b.Property<int>("GroupId")
                         .HasColumnType("int");
 
@@ -43,12 +40,17 @@ namespace AspireChat.Api.Entities.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<DateTime>("UpdatedAt")
                         .HasColumnType("datetime2");
 
-                    b.HasKey("Id");
+                    b.Property<int>("UserId")
+                        .HasColumnType("int");
 
-                    b.HasIndex("CreatedById");
+                    b.HasKey("Id");
 
                     b.HasIndex("GroupId");
 
@@ -66,9 +68,6 @@ namespace AspireChat.Api.Entities.Migrations
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2");
 
-                    b.Property<int>("CreatedById")
-                        .HasColumnType("int");
-
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -77,8 +76,6 @@ namespace AspireChat.Api.Entities.Migrations
                         .HasColumnType("datetime2");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("CreatedById");
 
                     b.ToTable("Groups");
                 });
@@ -119,44 +116,18 @@ namespace AspireChat.Api.Entities.Migrations
 
             modelBuilder.Entity("AspireChat.Api.Entities.Chat", b =>
                 {
-                    b.HasOne("AspireChat.Api.Entities.User", "CreatedBy")
-                        .WithMany("Chats")
-                        .HasForeignKey("CreatedById")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
                     b.HasOne("AspireChat.Api.Entities.Group", "Group")
                         .WithMany("Chats")
                         .HasForeignKey("GroupId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("CreatedBy");
-
                     b.Navigation("Group");
                 });
 
             modelBuilder.Entity("AspireChat.Api.Entities.Group", b =>
                 {
-                    b.HasOne("AspireChat.Api.Entities.User", "CreatedBy")
-                        .WithMany("Groups")
-                        .HasForeignKey("CreatedById")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("CreatedBy");
-                });
-
-            modelBuilder.Entity("AspireChat.Api.Entities.Group", b =>
-                {
                     b.Navigation("Chats");
-                });
-
-            modelBuilder.Entity("AspireChat.Api.Entities.User", b =>
-                {
-                    b.Navigation("Chats");
-
-                    b.Navigation("Groups");
                 });
 #pragma warning restore 612, 618
         }
