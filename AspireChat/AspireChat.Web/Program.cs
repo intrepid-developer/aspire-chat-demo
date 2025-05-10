@@ -21,9 +21,9 @@ builder.Services.AddRazorComponents()
 
 builder.Services.AddSingleton<AuthenticationService>();
 
-builder.Services.AddHttpClient<ChatClient>(client => { client.BaseAddress = new("https+http://api"); });
-builder.Services.AddHttpClient<GroupClient>(client => { client.BaseAddress = new("https+http://api"); });
-builder.Services.AddHttpClient<UserClient>(client => { client.BaseAddress = new("https+http://api"); });
+builder.Services.AddHttpClient<ChatClient>(client => { client.BaseAddress = new("https://api"); });
+builder.Services.AddHttpClient<GroupClient>(client => { client.BaseAddress = new("https://api"); });
+builder.Services.AddHttpClient<UserClient>(client => { client.BaseAddress = new("https://api"); });
 
 builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
     .AddCookie(options =>

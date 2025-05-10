@@ -27,7 +27,9 @@
     {
         <MudStack Spacing="2">
             <MudText Typo="Typo.h5">Edit Profile</MudText>
-            <MudAvatar Size="Size.Large" Class="mx-auto" Img="@_profileImageUrl"/>
+            <MudAvatar Size="Size.Large">
+                <MudImage Src="@_profileImageUrl"/>
+            </MudAvatar>
             <MudStack AlignItems="AlignItems.Center" Row="true">
                 <MudFileUpload T="IBrowserFile" FilesChanged="UploadFiles">
                     <ActivatorContent>

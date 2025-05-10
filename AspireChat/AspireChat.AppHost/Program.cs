@@ -73,6 +73,8 @@ var api = builder.AddProject<Projects.AspireChat_Api>("api")
     //Add Secrets and Evironment variables
     .WithEnvironment("JWT_KEY", jwtKey)
     
+    .WithHttpsEndpoint()
+    
     // DEPLOYMENT NOTE:
     // When deployed to Azure, services are private by default
     // Uncomment the line below to make the API accessible from the internet
@@ -88,6 +90,7 @@ var api = builder.AddProject<Projects.AspireChat_Api>("api")
 // 2. WEB FRONTEND
 // Add our web frontend project (Blazor app that users will interact with)
 builder.AddProject<Projects.AspireChat_Web>("web")
+    .WithHttpsEndpoint()
     // Make the web frontend publicly accessible when deployed
     .WithExternalHttpEndpoints()
     // Add a health check endpoint for monitoring

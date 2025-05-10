@@ -36,7 +36,7 @@
                       Adornment="Adornment.End" AdornmentIcon="@Icons.Material.Filled.Send"
                       OnAdornmentClick="SendMessage" Disabled="@_isSending"
                       OnKeyDown="HandleKeyDown" />
-        <MudButton Variant="Variant.Filled" Color="Color.Primary" Disabled="@_isSending || string.IsNullOrWhiteSpace(_newMessage)" OnClick="SendMessage">
+        <MudButton Variant="Variant.Filled" Color="Color.Primary" Disabled="@_isSending" OnClick="SendMessage">
             Send
         </MudButton>
     </MudStack>
