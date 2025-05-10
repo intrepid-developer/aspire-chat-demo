@@ -5,7 +5,7 @@
 @inject NavigationManager Navigation
 @inject IDialogService DialogService
 
-<MudPaper Class="pa-4">
+<MudPaper Class="pa-6" Elevation="0">
     <MudStack Row="true" AlignItems="AlignItems.Center" Justify="Justify.SpaceBetween">
         <MudText Typo="Typo.h5">Groups</MudText>
         <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="OpenCreateGroupDialog">
@@ -13,7 +13,7 @@
         </MudButton>
     </MudStack>
     <MudDivider Class="my-2" />
-    <MudTable Items="_groups" Dense="true" Hover="true">
+    <MudTable Items="_groups" Dense="true" Hover="true" Outlined="true" Elevation="0">
         <HeaderContent>
             <MudTh>Name</MudTh>
             <MudTh>Created</MudTh>
@@ -23,7 +23,7 @@
             <MudTd>@context.Name</MudTd>
             <MudTd>@context.CreatedAt.ToLocalTime().ToString("g")</MudTd>
             <MudTd>
-                <MudButton Variant="Variant.Outlined" Color="Color.Secondary" OnClick="@(() => JoinGroup(context.Id))">
+                <MudButton Variant="Variant.Outlined" Color="Color.Secondary" OnClick="@(() => JoinGroup(context.Id, context.Name))">
                     Join
                 </MudButton>
             </MudTd>
@@ -45,9 +45,9 @@
         _groups = groups.ToList();
     }
 
-    private void JoinGroup(int groupId)
+    private void JoinGroup(int groupId, string groupName)
     {
-        Navigation.NavigateTo($"/chat/{groupId}");
+        Navigation.NavigateTo($"/chat/{groupId}/{groupName}");
     }
 
     private async Task OpenCreateGroupDialog()

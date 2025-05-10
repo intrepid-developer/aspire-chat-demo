@@ -22,16 +22,18 @@ public class GetAllEndpoint(AppDbContext db) : Endpoint<GetAll.Request, GetAll.R
     {
         if (int.TryParse(User.FindFirst(ClaimTypes.Sid)?.Value, out var id))
         {
-            var chats = await db.Chats
-                .AsNoTracking()
-                .Select(chat => new GetAll.Dto
-                {
-                    Id = chat.Id,
-                    Name = chat.Name,
-                    Message = chat.Message,
-                    UserId = chat.UserId
-                })
-                .ToListAsync(ct);
+            var chats = await db.Database
+                .SqlQuery<GetAll.Dto>($"""
+                                       SELECT C.Id, 
+                                              C.Name, 
+                                              C.Message, 
+                                              C.UserId, 
+                                              U.ProfileImageUrl AS [UserAvatarUrl]
+                                       FROM Chats C
+                                       JOIN Users U ON C.UserId = U.Id
+                                       WHERE GroupId = {req.GroupId}
+                                       """)
+                .ToListAsync(cancellationToken: ct);
 
             await SendOkAsync(new GetAll.Response { Chats = chats }, ct);
         }

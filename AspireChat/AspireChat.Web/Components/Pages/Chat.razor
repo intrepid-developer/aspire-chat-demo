@@ -1,12 +1,12 @@
-@page "/chat/{groupId:int}"
+@page "/chat/{groupId:int}/{groupName}"
 @using AspireChat.Common.Chats
 @attribute [Authorize]
 @inject Clients.ChatClient ChatClient
 @inject ILogger<Chat> Logger
 
-<MudPaper Class="pa-4" Style="height:70vh; display:flex; flex-direction:column;">
-    <MudText Typo="Typo.h5" Class="mb-2">Chat</MudText>
-    <MudDivider />
+<MudPaper Class="pa-6" Elevation="0">
+    <MudText Typo="Typo.h5" Class="mb-2">Chat: @GroupName</MudText>
+    <MudDivider/>
     <MudStack Spacing="2" Class="overflow-y-auto flex-grow-1" Style="min-height:0;">
         @if (!_chats.Any())
         {
@@ -16,35 +16,44 @@
         {
             foreach (var chat in _chats.OrderBy(c => c.Id))
             {
-                <MudPaper Class="d-flex align-items-start mb-2" Elevation="1" Style="padding:8px;">
-                    <MudAvatar Size="Size.Medium" Class="me-2">
-                        <MudImage Src="https://placehold.co/40x40"></MudImage>
+                <MudChat ChatPosition="ChatBubblePosition.Start">
+                    <MudChatHeader Name="@chat.Name"/>
+                    <MudAvatar>
+                        @if (string.IsNullOrEmpty(chat.UserAvatarUrl))
+                        {
+                            <MudIcon Icon="@Icons.Material.Filled.Person"/>
+                        }
+                        else
+                        {
+                            <MudImage Src="@chat.UserAvatarUrl"/>
+                        }
                     </MudAvatar>
-                    <MudStack>
-                        <MudText Typo="Typo.subtitle2">@chat.Name</MudText>
-                        <MudPaper Class="pa-2" Style="background:#f5f5f5; border-radius:12px; min-width:120px;">
-                            <MudText>@chat.Message</MudText>
-                        </MudPaper>
-                    </MudStack>
-                </MudPaper>
+                    <MudChatBubble>
+                        @chat.Message
+                    </MudChatBubble>
+                </MudChat>
             }
         }
     </MudStack>
-    <MudDivider Class="mt-2 mb-2" />
+    <MudDivider Class="mt-2 mb-2"/>
     <MudStack Row="true" Spacing="1" AlignItems="AlignItems.Center">
-        <MudTextField @bind-Value="_newMessage" Placeholder="Type a message..." Variant="Variant.Outlined" Class="flex-grow-1"
-                      Adornment="Adornment.End" AdornmentIcon="@Icons.Material.Filled.Send"
-                      OnAdornmentClick="SendMessage" Disabled="@_isSending"
-                      OnKeyDown="HandleKeyDown" />
-        <MudButton Variant="Variant.Filled" Color="Color.Primary" Disabled="@_isSending" OnClick="SendMessage">
-            Send
-        </MudButton>
+        <MudTextField @bind-Value="_newMessage"
+                      Placeholder="Type a message..."
+                      Variant="Variant.Outlined"
+                      Class="flex-grow-1"
+                      Adornment="Adornment.End"
+                      AdornmentIcon="@Icons.Material.Filled.Send"
+                      OnAdornmentClick="SendMessage"
+                      Disabled="@_isSending"
+                      OnKeyDown="HandleKeyDown"
+                      DebounceInterval="1"/>
     </MudStack>
 </MudPaper>
 
 @code {
-    [Parameter]
-    public int GroupId { get; set; }
+    [Parameter] public int GroupId { get; set; }
+
+    [Parameter] public string GroupName { get; set; } = string.Empty;
 
     private List<GetAll.Dto> _chats = [];
     private string _newMessage = "";

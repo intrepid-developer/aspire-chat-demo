@@ -57,7 +57,7 @@ public class UserClient(
         try
         {
             httpClient.DefaultRequestHeaders.Authorization = await AuthProvider.AuthorizationHeaderValue();
-            var response = await httpClient.PutAsJsonAsync("/users/update", request, cancellationToken);
+            var response = await httpClient.PutAsJsonAsync("/users", request, cancellationToken);
             response.EnsureSuccessStatusCode();
             var content = await response.Content.ReadFromJsonAsync<Update.Response>(cancellationToken);
             return content?.Success ?? false;

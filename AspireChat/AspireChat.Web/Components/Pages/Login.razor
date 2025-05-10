@@ -2,7 +2,7 @@
 @inject NavigationManager Navigation
 @inject Clients.UserClient UserClient
 
-<MudPaper Elevation="0">
+<MudPaper Elevation="0" Class="pa-6">
     <MudCard Outlined="true" Elevation="0">
         <MudCardContent>
             <MudText Typo="Typo.h5" Align="Align.Center" Class="mb-4">
@@ -58,7 +58,11 @@
             <MudText Class="me-1">
                 @(_isRegister ? "Already have an account?" : "Don't have an account?")
             </MudText>
-            <MudButton Variant="Variant.Text" Color="Color.Secondary" OnClick="ToggleMode" Disabled="_loading">
+            <MudButton Variant="Variant.Text"
+                       Color="Color.Secondary"
+                       OnClick="ToggleMode"
+                       Disabled="_loading"
+                       FullWidth="false">
                 @(_isRegister ? "Login" : "Register")
             </MudButton>
         </MudCardActions>

@@ -17,10 +17,9 @@ public class AuthProvider(ProtectedSessionStorage sessionStorage) : Authenticati
 
     public override Task<AuthenticationState> GetAuthenticationStateAsync()
     {
-        var identity = new ClaimsIdentity();
-        var user = new ClaimsPrincipal(identity);
-
-        return Task.FromResult(new AuthenticationState(user));
+        var anonymous = new ClaimsIdentity();
+        var anonymousUser = new ClaimsPrincipal(anonymous);
+        return Task.FromResult(new AuthenticationState(anonymousUser));
     }
 
     public async Task AuthenticateUser(string token)
@@ -28,7 +27,7 @@ public class AuthProvider(ProtectedSessionStorage sessionStorage) : Authenticati
         var claims = ParseClaimsFromJwt(token);
         var identity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
         var user = new ClaimsPrincipal(identity);
-        
+
         await sessionStorage.SetAsync("token", token);
 
         NotifyAuthenticationStateChanged(
