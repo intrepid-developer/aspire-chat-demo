@@ -17,6 +17,9 @@ builder.Services.AddOpenApi();
 // Add Entity Framework Core with SQL Server
 builder.AddSqlServerDbContext<AppDbContext>("db");
 
+// Add Blob Storage
+builder.AddAzureBlobClient("blobs");
+
 // Add FastEndpoints
 builder.Services.AddFastEndpoints();
 builder.Services

@@ -83,6 +83,7 @@ var api = builder.AddProject<Projects.AspireChat_Api>("api")
     // Connect the API to our infrastructure services
     // WithReference() gives the API connection info for the service
     // WaitFor() ensures the API won't start until these services are ready
+    .WithReference(blobStorage).WaitFor(blobStorage)
     .WithReference(cache).WaitFor(cache)
     .WithReference(database).WaitFor(database);
 
