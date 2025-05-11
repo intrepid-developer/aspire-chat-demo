@@ -11,6 +11,8 @@
         <MudText Typo="Typo.body1">
             Welcome to the Aspire Chat Demo app! This application demonstrates real-time chat functionality built with <b>Blazor</b> and powered by <b>.NET Aspire</b>.
         </MudText>
+        
+        <MudImage Src="@($"{_baseUrl}/static-assets/dashboard.png")"/>
 
         <MudAlert Severity="Severity.Info" Variant="Variant.Filled" Dense="true">
             This project is part of my <b>blog series</b> on building modern distributed applications using <b>Aspire</b> and <b>Blazor</b>.
@@ -34,3 +36,7 @@
         </AuthorizeView>
     </MudStack>
 </MudPaper>
+
+@code {
+    private string _baseUrl = Environment.GetEnvironmentVariable("BlobStorageUrl") ?? string.Empty;
+}

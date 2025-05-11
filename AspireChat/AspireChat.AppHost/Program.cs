@@ -7,6 +7,9 @@
 
 // Create the distributed application builder - this is the foundation
 // of any Aspire application
+
+using AspireChat.AppHost.Commands;
+
 var builder = DistributedApplication.CreateBuilder(args);
 
 //======================================================================
@@ -38,7 +41,7 @@ var cache = builder.AddRedis("cache")
 // Add SQL Server for persistent data storage
 // Uses a Docker container for local development to avoid needing a real SQL Server
 var sqlServer = builder.AddAzureSqlServer("sql")
-    .RunAsContainer(); 
+    .RunAsContainer();
 
 // Create a database instance on our SQL Server
 // This will be used by our application for data storage
@@ -49,11 +52,12 @@ var database = sqlServer.AddDatabase("db");
 // Add Azure Storage for storing files, blobs, and other unstructured data
 // Uses the Azurite emulator for local development to simulate Azure Storage
 var storage = builder.AddAzureStorage("storage")
-    .RunAsEmulator(); 
+    .RunAsEmulator();
 
 // Enable blob storage specifically - we'll use this for file uploads
 // This creates a blob container within our storage account
-var blobStorage = storage.AddBlobs("blobs");
+var blobStorage = storage.AddBlobs("blobs")
+    .WithSeedCommand();
 
 //======================================================================
 // APP PARAMETERS AND SECRETS
@@ -69,17 +73,16 @@ var jwtKey = builder.AddParameter("jwt-key", true);
 var api = builder.AddProject<Projects.AspireChat_Api>("api")
     // Add a health check endpoint so Aspire can monitor the API's status
     .WithHttpsHealthCheck("/health")
-    
+
     //Add Secrets and Evironment variables
     .WithEnvironment("JWT_KEY", jwtKey)
-    
     .WithHttpsEndpoint()
-    
+
     // DEPLOYMENT NOTE:
     // When deployed to Azure, services are private by default
     // Uncomment the line below to make the API accessible from the internet
     //.WithExternalHttpEndpoints()
-    
+
     // Connect the API to our infrastructure services
     // WithReference() gives the API connection info for the service
     // WaitFor() ensures the API won't start until these services are ready
