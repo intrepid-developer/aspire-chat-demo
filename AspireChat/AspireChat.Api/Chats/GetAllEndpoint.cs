@@ -28,7 +28,8 @@ public class GetAllEndpoint(AppDbContext db) : Endpoint<GetAll.Request, GetAll.R
                                               C.Name, 
                                               C.Message, 
                                               C.UserId, 
-                                              U.ProfileImageUrl AS [UserAvatarUrl]
+                                              U.ProfileImageUrl AS [UserAvatarUrl],
+                                              CAST(CASE WHEN C.UserId = {id} THEN 1 ELSE 0 END AS BIT) AS IsMe
                                        FROM Chats C
                                        JOIN Users U ON C.UserId = U.Id
                                        WHERE GroupId = {req.GroupId}

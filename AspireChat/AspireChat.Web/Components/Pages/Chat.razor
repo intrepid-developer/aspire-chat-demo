@@ -1,4 +1,5 @@
 @page "/chat/{groupId:int}/{groupName}"
+@using System.Timers
 @using AspireChat.Common.Chats
 @attribute [Authorize]
 @inject Clients.ChatClient ChatClient
@@ -16,7 +17,7 @@
         {
             foreach (var chat in _chats.OrderBy(c => c.Id))
             {
-                <MudChat ChatPosition="ChatBubblePosition.Start">
+                <MudChat ChatPosition="@(chat.IsMe ? ChatBubblePosition.End : ChatBubblePosition.Start)">
                     <MudChatHeader Name="@chat.Name"/>
                     <MudAvatar>
                         @if (string.IsNullOrEmpty(chat.UserAvatarUrl))
@@ -58,10 +59,19 @@
     private List<GetAll.Dto> _chats = [];
     private string _newMessage = "";
     private bool _isSending;
+    private Timer? _timer;
 
     protected override async Task OnInitializedAsync()
     {
         await LoadChatsAsync();
+        _timer = new();
+        _timer.Interval = 1000;
+        _timer.Elapsed += async (object? _, ElapsedEventArgs _) =>
+        {
+            await LoadChatsAsync();
+            await InvokeAsync(StateHasChanged);
+        };
+        _timer.Enabled = true;
     }
 
     private async Task LoadChatsAsync()
@@ -105,4 +115,5 @@
             await SendMessage();
         }
     }
+
 }

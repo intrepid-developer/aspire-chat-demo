@@ -21,5 +21,6 @@ public sealed class GetAll
         public string Message { get; set; } = string.Empty;
         public int UserId { get; set; }
         public string? UserAvatarUrl { get; set; }
+        public bool IsMe { get; set; }
     }
 }
