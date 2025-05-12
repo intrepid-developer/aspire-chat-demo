@@ -101,7 +101,8 @@ builder.AddProject<Projects.AspireChat_Web>("web")
     // Connect the web app to the services it needs
     // Note how the web app depends on both the cache AND the API
     .WithReference(cache).WaitFor(cache)
-    .WithReference(api).WaitFor(api);
+    .WithReference(api).WaitFor(api)
+    .WithReference(blobStorage).WaitFor(blobStorage);
 
 //======================================================================
 // BUILD AND RUN
