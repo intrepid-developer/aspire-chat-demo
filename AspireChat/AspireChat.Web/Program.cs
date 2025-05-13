@@ -1,5 +1,4 @@
 using AspireChat.ServiceDefaults;
-using AspireChat.Web;
 using AspireChat.Web.Clients;
 using AspireChat.Web.Components;
 using AspireChat.Web.Services;

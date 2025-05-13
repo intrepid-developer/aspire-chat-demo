@@ -5,27 +5,28 @@
 <MudContainer MaxWidth="MaxWidth.Large" Class="mt-8">
 
     <!-- Hero Section -->
-    <MudPaper Class="pa-6" Elevation="0" Square="true" Outlined="true">
+    <MudPaper Class="pa-6 mb-5" Elevation="0" Square="true" Outlined="true">
         <MudText Typo="Typo.h3" GutterBottom="true">Welcome to Aspire Chat Demo</MudText>
         <MudText Typo="Typo.subtitle1" Class="mb-4">
             A cloud-native, real-time chat application built with .NET Aspire, Azure services, and MudBlazor.
             Follow along as we explore API design, Blazor Server UI, SignalR integration, and deployment.
         </MudText>
-        <MudButton Variant="Variant.Filled" Color="Color.Primary"
-                   Href="https://intrepid-developer/blog/getting-started-with-aspire">Read the Blog
+        <MudButton Variant="Variant.Filled"
+                   Color="Color.Primary"
+                   Href="https://intrepid-developer/blog/getting-started-with-aspire">
+            Read the Blog
         </MudButton>
     </MudPaper>
 
     <!-- Features Section -->
-    <MudDivider Class="my-8"/>
-    <MudText Typo="Typo.h4" GutterBottom="true" Id="features">Key Features</MudText>
+    <MudText Typo="Typo.h4" GutterBottom="true">Key Features</MudText>
     <MudGrid Spacing="4">
 
         <!-- Aspire Dashboard -->
-        <MudItem xs="12" md="6" lg="3">
+        <MudItem xs="12" md="6">
             <MudCard Elevation="0" Outlined="true">
                 <MudCardMedia Height="140"
-                              Image="@($"{_apiUrl}/static-assets/dashboard.png")"/>
+                              Image="/static-assets/dashboard.png"/>
                 <MudCardContent>
                     <MudText Typo="Typo.h6">Aspire Dashboard</MudText>
                     <MudText Typo="Typo.body2">
@@ -38,10 +39,10 @@
         </MudItem>
 
         <!-- Live Stats -->
-        <MudItem xs="12" md="6" lg="3">
+        <MudItem xs="12" md="6">
             <MudCard Elevation="0" Outlined="true">
                 <MudCardMedia Height="140"
-                              Image="@($"{_apiUrl}/static-assets/trace.png")"/>
+                              Image="/static-assets/trace.png"/>
                 <MudCardContent>
                     <MudText Typo="Typo.h6">Tracing</MudText>
                     <MudText Typo="Typo.body2">
@@ -53,10 +54,10 @@
         </MudItem>
 
         <!-- Sample Log Viewer -->
-        <MudItem xs="12" md="6" lg="3">
+        <MudItem xs="12" md="6">
             <MudCard Elevation="0" Outlined="true">
                 <MudCardMedia Height="140"
-                              Image="@($"{_apiUrl}/static-assets/logs.png")"/>
+                              Image="/static-assets/logs.png"/>
                 <MudCardContent>
                     <MudText Typo="Typo.h6">Sample Log Viewer</MudText>
                     <MudText Typo="Typo.body2">
@@ -68,10 +69,10 @@
         </MudItem>
 
         <!-- Sample Log Viewer -->
-        <MudItem xs="12" md="6" lg="3">
+        <MudItem xs="12" md="6">
             <MudCard Elevation="0" Outlined="true">
                 <MudCardMedia Height="140"
-                              Image="@($"{_apiUrl}/static-assets/console.png")"/>
+                              Image="/static-assets/console.png"/>
                 <MudCardContent>
                     <MudText Typo="Typo.h6">Console Viewer</MudText>
                     <MudText Typo="Typo.body2">
@@ -83,14 +84,15 @@
     </MudGrid>
 
     <!-- Getting Started CTA -->
-    <MudDivider Class="my-8"/>
-    <MudPaper Class="pa-4" Elevation="0" Outlined="true">
+    <MudPaper Class="pa-4 my-5" Elevation="0" Outlined="true">
         <MudText Typo="Typo.h5" Class="mb-2">Ready to dive in?</MudText>
         <MudText Typo="Typo.body1" Class="mb-4">
             Follow our step-by-step blog series to build, deploy, and monitor your own chat application on Azure.
         </MudText>
-        <MudButton Variant="Variant.Outlined" Color="Color.Secondary"
-                   Href="https://intrepid-developer/blog/getting-started-with-aspire">See Blog Series
+        <MudButton Variant="Variant.Outlined"
+                   Color="Color.Secondary"
+                   Href="https://intrepid-developer/blog/getting-started-with-aspire">
+            See Blog Series
         </MudButton>
     </MudPaper>
 
@@ -101,7 +103,6 @@
 
     protected override void OnInitialized()
     {
-        _apiUrl = Configuration["blobs"];
+        _apiUrl = Configuration["StaticAssetsUrl"];
     }
-
 }

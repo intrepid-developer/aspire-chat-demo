@@ -17,4 +17,15 @@
         <PackageReference Include="MudBlazor.FontIcons.MaterialSymbols" Version="1.2.0" />
     </ItemGroup>
 
+    <ItemGroup>
+      <None Include="wwwroot\static-assets\api-web-logs.png" />
+      <None Include="wwwroot\static-assets\api-web-trace.png" />
+      <None Include="wwwroot\static-assets\commands.png" />
+      <None Include="wwwroot\static-assets\console.png" />
+      <None Include="wwwroot\static-assets\dashboard.png" />
+      <None Include="wwwroot\static-assets\dependency-chart.png" />
+      <None Include="wwwroot\static-assets\logs.png" />
+      <None Include="wwwroot\static-assets\trace.png" />
+    </ItemGroup>
+
 </Project>

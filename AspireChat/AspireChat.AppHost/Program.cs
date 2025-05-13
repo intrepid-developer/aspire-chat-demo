@@ -8,8 +8,6 @@
 // Create the distributed application builder - this is the foundation
 // of any Aspire application
 
-using AspireChat.AppHost.Commands;
-
 var builder = DistributedApplication.CreateBuilder(args);
 
 //======================================================================
@@ -56,8 +54,7 @@ var storage = builder.AddAzureStorage("storage")
 
 // Enable blob storage specifically - we'll use this for file uploads
 // This creates a blob container within our storage account
-var blobStorage = storage.AddBlobs("blobs")
-    .WithSeedCommand();
+var blobStorage = storage.AddBlobs("blobs");
 
 //======================================================================
 // APP PARAMETERS AND SECRETS
@@ -71,10 +68,10 @@ var jwtKey = builder.AddParameter("jwt-key", true);
 // 1. API SERVICE
 // Add our backend API project that will provide data to our frontend
 var api = builder.AddProject<Projects.AspireChat_Api>("api")
-    .WithHttpsEndpoint(name: "api-https")
-    
+    .WithHttpsEndpoint()
+
     // Add a health check endpoint so Aspire can monitor the API's status
-    .WithHttpsHealthCheck("/health", endpointName: "api-https")
+    .WithHttpsHealthCheck("/health")
 
     //Add Secrets and Environment variables
     .WithEnvironment("JWT_KEY", jwtKey)
@@ -89,20 +86,19 @@ var api = builder.AddProject<Projects.AspireChat_Api>("api")
 
 // 2. WEB FRONTEND
 // Add our web frontend project (Blazor app that users will interact with)
-builder.AddProject<Projects.AspireChat_Web>("web")
-    .WithHttpsEndpoint(name: "web-https")
-    
+var web = builder.AddProject<Projects.AspireChat_Web>("web")
+    .WithHttpsEndpoint()
+
     // Make the web frontend publicly accessible when deployed
     .WithExternalHttpEndpoints()
-    
+
     // Add a health check endpoint for monitoring
-    .WithHttpsHealthCheck("/health", endpointName: "web-https")
-    
+    .WithHttpsHealthCheck("/health")
+
     // Connect the web app to the services it needs
     // Note how the web app depends on both the cache AND the API
     .WithReference(cache).WaitFor(cache)
-    .WithReference(api).WaitFor(api)
-    .WithReference(blobStorage).WaitFor(blobStorage);
+    .WithReference(api).WaitFor(api);
 
 //======================================================================
 // BUILD AND RUN
