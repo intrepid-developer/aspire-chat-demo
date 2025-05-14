@@ -14,7 +14,14 @@ The application follows a microservices-inspired architecture with:
 - **Web Frontend**: Blazor Server application providing the user interface
 - **Infrastructure**: Redis for caching and pub/sub, SQL Server for data persistence, and Azure Storage for file attachments
 
-![Architecture Diagram (placeholder)]()
+**Aspire Dashboard**
+![Aspire Dashboard](Images/dashboard.png)
+
+**Dependency Graph**
+![Dependency Graph](Images/dependency-chart.png)
+
+**Application**
+![Application](Images/app.png)
 
 ## 🛠️ Technologies
 
@@ -40,7 +47,8 @@ The application follows a microservices-inspired architecture with:
 
 - .NET 9 SDK
 - Docker Desktop
-- Visual Studio 2022 or later / VS Code with C# Dev Kit
+- Jetbrains Rider, Visual Studio 2022 or later / VS Code with C# Dev Kit
+- Aspire Cli
 - Azure subscription (for deployment)
 
 ### Local Development
@@ -51,12 +59,19 @@ The application follows a microservices-inspired architecture with:
    cd aspire-chat-demo
    ```
 
-2. Run the application with Aspire dashboard:
+2. Install the Aspire Cli
    ```
-   dotnet run --project AspireChat.AppHost
+   dotnet tool install --global aspire.cli --prerelease
+   ```
+   
+3. Run the application with Aspire dashboard:
+   ```
+   cd AspireChat/AspireChat.AppHost
+   aspire run
    ```
 
-3. Navigate to the Aspire dashboard (automatically opened) to view and manage your services
+4. Navigate to the Aspire dashboard to view and manage your services
+![Aspire Cli](Images/aspire-cli.png)
 
 ### Deployment to Azure
 
@@ -66,38 +81,15 @@ The blog series will cover step-by-step deployment to Azure using:
 - Azure Cache for Redis
 - Azure Blob Storage for file storage
 
-## ✨ Features
-
-- Real-time messaging with SignalR
-- User authentication and authorization
-- File and image sharing
-- Message threading and reactions
-- Chat history and search
-- User presence indicators
-
 ## 📝 Blog Series
 
-This project is being built as part of a comprehensive blog series on using .NET Aspire with Azure. Topics covered include:
-
-1. Introduction to .NET Aspire and project setup
-2. Building the API with FastEndpoints
-3. Creating the Blazor Server frontend
-4. Adding real-time communication
-5. Integrating Azure services (SQL, Redis, Storage)
-6. Deploying to Azure Container Apps
-7. Monitoring and observability
-8. Performance tuning and scaling
+This Project is the foundation for several blog posts.
+The series will cover the following topics:
+- Getting started with .NET Aspire
+- Building a real-time chat application with Blazor and FastEndpoints
+- Integrating Azure services with .NET Aspire
 
 Stay tuned for links to each blog post as they are published!
-
-## 🔄 Development Roadmap
-
-- [ ] Basic chat functionality
-- [ ] User authentication
-- [ ] File sharing capabilities
-- [ ] Advanced UI features
-- [ ] Azure deployment
-- [ ] Monitoring and observability
 
 ## 📄 License
 

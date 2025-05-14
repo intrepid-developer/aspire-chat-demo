@@ -1,5 +1,9 @@
-using AspireChat.Web;
+using AspireChat.ServiceDefaults;
+using AspireChat.Web.Clients;
 using AspireChat.Web.Components;
+using AspireChat.Web.Services;
+using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Components.Authorization;
 using MudBlazor.Services;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -15,12 +19,23 @@ builder.Services.AddMudServices();
 builder.Services.AddRazorComponents()
     .AddInteractiveServerComponents();
 
-builder.Services.AddHttpClient<ApiClient>(client =>
-{
-    // This URL uses "https+http://" to indicate HTTPS is preferred over HTTP.
-    // Learn more about service discovery scheme resolution at https://aka.ms/dotnet/sdschemes.
-    client.BaseAddress = new("https+http://api");
-});
+builder.Services.AddHttpContextAccessor();
+
+builder.Services.AddScoped<AuthenticationStateProvider,AuthProvider>();
+
+builder.Services.AddHttpClient<ChatClient>(client => { client.BaseAddress = new("https://api"); });
+builder.Services.AddHttpClient<GroupClient>(client => { client.BaseAddress = new("https://api"); });
+builder.Services.AddHttpClient<UserClient>(client => { client.BaseAddress = new("https://api"); });
+
+builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
+    .AddCookie(options =>
+    {
+        options.LoginPath = "/login"; // 👈 redirect here when unauthorized
+        options.AccessDeniedPath = "/access-denied"; // optional
+    });
+
+builder.Services.AddAuthorization();
+builder.Services.AddCascadingAuthenticationState();
 
 var app = builder.Build();
 

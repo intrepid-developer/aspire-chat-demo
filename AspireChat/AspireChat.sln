@@ -10,6 +10,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AspireChat.Web", "AspireCha
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AspireChat.Tests", "AspireChat.Tests\AspireChat.Tests.csproj", "{3F5CA20C-27A9-4C78-9E7B-94F4AD64AEB7}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AspireChat.Common", "AspireChat.Common\AspireChat.Common.csproj", "{5197C5A1-B50F-456C-8E28-7AD9ABFE97D1}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -36,5 +38,9 @@ Global
 		{3F5CA20C-27A9-4C78-9E7B-94F4AD64AEB7}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{3F5CA20C-27A9-4C78-9E7B-94F4AD64AEB7}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{3F5CA20C-27A9-4C78-9E7B-94F4AD64AEB7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5197C5A1-B50F-456C-8E28-7AD9ABFE97D1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5197C5A1-B50F-456C-8E28-7AD9ABFE97D1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5197C5A1-B50F-456C-8E28-7AD9ABFE97D1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5197C5A1-B50F-456C-8E28-7AD9ABFE97D1}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal

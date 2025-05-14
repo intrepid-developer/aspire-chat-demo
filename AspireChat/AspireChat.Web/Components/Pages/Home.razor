@@ -1,7 +1,110 @@
 ﻿@page "/"
+@inject IConfiguration Configuration
 
 <PageTitle>Home</PageTitle>
+<MudContainer MaxWidth="MaxWidth.Large" Class="mt-8">
 
-<h1>Hello, world!</h1>
+    <!-- Hero Section -->
+    <MudPaper Class="pa-6 mb-5" Elevation="0" Square="true" Outlined="true">
+        <MudText Typo="Typo.h3" GutterBottom="true">Welcome to Aspire Chat Demo</MudText>
+        <MudText Typo="Typo.subtitle1" Class="mb-4">
+            A cloud-native, real-time chat application built with .NET Aspire, Azure services, and MudBlazor.
+            Follow along as we explore API design, Blazor Server UI, SignalR integration, and deployment.
+        </MudText>
+        <MudButton Variant="Variant.Filled"
+                   Color="Color.Primary"
+                   Href="https://intrepid-developer.com/blog/getting-started-with-aspire">
+            Read the Blog
+        </MudButton>
+    </MudPaper>
 
-Welcome to your new app.
+    <!-- Features Section -->
+    <MudText Typo="Typo.h4" GutterBottom="true">Key Features</MudText>
+    <MudGrid Spacing="4">
+
+        <!-- Aspire Dashboard -->
+        <MudItem xs="12" md="6">
+            <MudCard Elevation="0" Outlined="true">
+                <MudCardMedia Height="140"
+                              Image="/static-assets/dashboard.png"/>
+                <MudCardContent>
+                    <MudText Typo="Typo.h6">Aspire Dashboard</MudText>
+                    <MudText Typo="Typo.body2">
+                        Monitor your microservices in real time: metrics, logs, and health checks in one unified
+                        dashboard.
+                        (Blog: “Getting Started with the Aspire Dashboard”)
+                    </MudText>
+                </MudCardContent>
+            </MudCard>
+        </MudItem>
+
+        <!-- Live Stats -->
+        <MudItem xs="12" md="6">
+            <MudCard Elevation="0" Outlined="true">
+                <MudCardMedia Height="140"
+                              Image="/static-assets/trace.png"/>
+                <MudCardContent>
+                    <MudText Typo="Typo.h6">Tracing</MudText>
+                    <MudText Typo="Typo.body2">
+                        Aspire tracing provides a powerful way to visualize and analyze your applications performance
+                        and understand what's going on.
+                    </MudText>
+                </MudCardContent>
+            </MudCard>
+        </MudItem>
+
+        <!-- Sample Log Viewer -->
+        <MudItem xs="12" md="6">
+            <MudCard Elevation="0" Outlined="true">
+                <MudCardMedia Height="140"
+                              Image="/static-assets/logs.png"/>
+                <MudCardContent>
+                    <MudText Typo="Typo.h6">Sample Log Viewer</MudText>
+                    <MudText Typo="Typo.body2">
+                        Browse and filter chat activity logs stored in Azure Blob Storage, with EF Core for persistence.
+                        (Blog: “Building a Log Viewer with EF Core & Azure Blob”)
+                    </MudText>
+                </MudCardContent>
+            </MudCard>
+        </MudItem>
+
+        <!-- Sample Log Viewer -->
+        <MudItem xs="12" md="6">
+            <MudCard Elevation="0" Outlined="true">
+                <MudCardMedia Height="140"
+                              Image="/static-assets/console.png"/>
+                <MudCardContent>
+                    <MudText Typo="Typo.h6">Console Viewer</MudText>
+                    <MudText Typo="Typo.body2">
+                        You can also view logs in the console, with a simple UI to filter and search through messages.
+                    </MudText>
+                </MudCardContent>
+            </MudCard>
+        </MudItem>
+    </MudGrid>
+
+    <!-- Getting Started CTA -->
+    <MudPaper Class="pa-4 my-5" Elevation="0" Outlined="true">
+        <MudText Typo="Typo.h5" Class="mb-2">Ready to dive in?</MudText>
+        <MudText Typo="Typo.body1" Class="mb-4">
+            Follow our step-by-step blog series to build, deploy, and monitor your own chat application on Azure.
+        </MudText>
+        <MudButton
+            Variant="Variant.Filled"
+            Color="Color.Primary"
+            Href="https://intrepid-developer.com/blog/getting-started-with-aspire">
+            Read the Blog
+        </MudButton>
+    </MudPaper>
+
+</MudContainer>
+
+@code{
+    private string? _apiUrl;
+
+    protected override void OnInitialized()
+    {
+        _apiUrl = Configuration["StaticAssetsUrl"];
+    }
+
+}
