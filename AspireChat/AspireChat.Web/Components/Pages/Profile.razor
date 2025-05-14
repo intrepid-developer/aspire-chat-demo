@@ -1,6 +1,129 @@
 @page "/profile"
-<h3>Profile</h3>
+@using AspireChat.Web.Clients
+@using AspireChat.Common.Users
+@attribute [Authorize]
+@inject UserClient UserClient
+@inject ISnackbar Snackbar
+
+<MudPaper Class="pa-6" Elevation="0">
+    <MudStack Spacing="2">
+        <MudText Typo="Typo.h5">Edit Profile</MudText>
+        <MudAvatar Size="Size.Large">
+            <MudImage Src="@_profileImageUrl"/>
+        </MudAvatar>
+        <MudStack AlignItems="AlignItems.Center" Row="true">
+            <MudFileUpload T="IBrowserFile" FilesChanged="UploadFiles">
+                <ActivatorContent>
+                    <MudButton Variant="Variant.Filled"
+                               Color="Color.Primary"
+                               StartIcon="@Icons.Material.Filled.CloudUpload">
+                        Change Profile Image
+                    </MudButton>
+                </ActivatorContent>
+            </MudFileUpload>
+        </MudStack>
+        <MudForm @ref="_form">
+            <MudTextField @bind-Value="_name" Label="Name" Required="true"/>
+            <MudTextField @bind-Value="_email" Label="Email" Required="true"/>
+            <MudTextField @bind-Value="_password" Label="Password" InputType="InputType.Password"/>
+            <MudStack Row="true" Spacing="2" Class="mt-4">
+                <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="OnSave" Disabled="@_isSaving"
+                           FullWidth="true">
+                    @(_isSaving ? "Saving..." : "Save Changes")
+                </MudButton>
+                <MudButton Variant="Variant.Outlined" Color="Color.Secondary" OnClick="CancelEdit" Disabled="@_isSaving"
+                           FullWidth="true">
+                    Cancel
+                </MudButton>
+            </MudStack>
+        </MudForm>
+    </MudStack>
+</MudPaper>
 
 @code {
-    
+    private MudForm _form = null!;
+    private string _name = string.Empty;
+    private string _email = string.Empty;
+    private string _password = string.Empty;
+    private string _profileImageUrl = string.Empty;
+    private bool _isSaving;
+    private string _originalName = string.Empty;
+    private string _originalEmail = string.Empty;
+    private string _originalProfileImageUrl = string.Empty;
+
+    protected override async Task OnInitializedAsync()
+    {
+        await LoadProfile();
+    }
+
+    private async Task LoadProfile()
+    {
+        var profile = await UserClient.GetProfileAsync();
+        if (profile is not null)
+        {
+            _name = profile.Name;
+            _email = profile.Email;
+            _profileImageUrl = profile.ProfileImageUrl ?? string.Empty;
+            // Store originals for cancel
+            _originalName = _name;
+            _originalEmail = _email;
+            _originalProfileImageUrl = _profileImageUrl;
+        }
+    }
+
+    private async Task OnSave()
+    {
+        await _form.Validate();
+        if (!_form.IsValid)
+            return;
+
+        _isSaving = true;
+        var success = await UserClient.UpdateAsync(
+            new Update.Request(_name,
+                _email,
+                string.IsNullOrWhiteSpace(_profileImageUrl) ? null : _profileImageUrl,
+                string.IsNullOrWhiteSpace(_password) ? null : _password),
+            CancellationToken.None
+        );
+        _isSaving = false;
+
+        if (success)
+        {
+            Snackbar.Add("Profile updated successfully.", Severity.Success);
+            await LoadProfile();
+        }
+        else
+        {
+            Snackbar.Add("Failed to update profile.", Severity.Error);
+        }
+    }
+
+    private void CancelEdit()
+    {
+        _name = _originalName;
+        _email = _originalEmail;
+        _profileImageUrl = _originalProfileImageUrl;
+        _password = string.Empty;
+    }
+
+    private async Task UploadFiles(IBrowserFile? file)
+    {
+        if (file is null)
+        {
+            Snackbar.Add("No Image Selected.", Severity.Error);
+            return;
+        }
+
+        var imageUrl = await UserClient.UploadImageAsync(file);
+        if (!string.IsNullOrEmpty(imageUrl))
+        {
+            _profileImageUrl = imageUrl;
+            StateHasChanged();
+            Snackbar.Add("Profile image updated.", Severity.Success);
+        }
+        else
+        {
+            Snackbar.Add("Failed to upload image.", Severity.Error);
+        }
+    }
 }

@@ -31,8 +31,8 @@ public class WebTests
         await app.StartAsync(cancellationToken).WaitAsync(DefaultTimeout, cancellationToken);
 
         // Act
-        var httpClient = app.CreateHttpClient("webfrontend");
-        await app.ResourceNotifications.WaitForResourceHealthyAsync("webfrontend", cancellationToken)
+        var httpClient = app.CreateHttpClient("web");
+        await app.ResourceNotifications.WaitForResourceHealthyAsync("web", cancellationToken)
             .WaitAsync(DefaultTimeout, cancellationToken);
         var response = await httpClient.GetAsync("/", cancellationToken);
 

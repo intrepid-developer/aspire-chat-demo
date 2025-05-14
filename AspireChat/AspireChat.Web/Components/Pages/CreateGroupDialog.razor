@@ -1,0 +1,55 @@
+@using AspireChat.Web.Clients
+@inject GroupClient GroupClient
+
+<MudDialog>
+    <DialogContent>
+        <MudText Typo="Typo.h6">Create New Group</MudText>
+        <MudTextField @bind-Value="_groupName" Label="Group Name" Required="true" Immediate="true"/>
+        @if (_error != null)
+        {
+            <MudText Color="Color.Error">@_error</MudText>
+        }
+    </DialogContent>
+    <DialogActions>
+        <MudButton OnClick="CreateGroup" Disabled="@_isBusy" Color="Color.Primary">Create</MudButton>
+        <MudButton OnClick="Cancel" Disabled="@_isBusy" Color="Color.Default">Cancel</MudButton>
+    </DialogActions>
+</MudDialog>
+
+@code {
+    [CascadingParameter] private IMudDialogInstance MudDialog { get; set; } = null!;
+
+    private string _groupName = string.Empty;
+    private bool _isBusy;
+    private string? _error;
+
+    private async Task CreateGroup()
+    {
+        _isBusy = true;
+        _error = null;
+        if (string.IsNullOrWhiteSpace(_groupName))
+        {
+            _error = "Group name is required.";
+            _isBusy = false;
+            return;
+        }
+
+        var success = await GroupClient.CreateGroupAsync(new AspireChat.Common.Groups.Create.Request { Name = _groupName }, CancellationToken.None);
+        if (success)
+        {
+            MudDialog.Close();
+        }
+        else
+        {
+            _error = "Failed to create group.";
+        }
+
+        _isBusy = false;
+    }
+
+    private void Cancel()
+    {
+        MudDialog.Cancel();
+    }
+
+}
