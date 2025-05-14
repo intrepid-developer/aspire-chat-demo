@@ -68,8 +68,6 @@ var jwtKey = builder.AddParameter("jwt-key", true);
 // 1. API SERVICE
 // Add our backend API project that will provide data to our frontend
 var api = builder.AddProject<Projects.AspireChat_Api>("api")
-    .WithHttpsEndpoint()
-
     // Add a health check endpoint so Aspire can monitor the API's status
     .WithHttpsHealthCheck("/health")
 
@@ -87,8 +85,6 @@ var api = builder.AddProject<Projects.AspireChat_Api>("api")
 // 2. WEB FRONTEND
 // Add our web frontend project (Blazor app that users will interact with)
 var web = builder.AddProject<Projects.AspireChat_Web>("web")
-    .WithHttpsEndpoint()
-
     // Make the web frontend publicly accessible when deployed
     .WithExternalHttpEndpoints()
 
