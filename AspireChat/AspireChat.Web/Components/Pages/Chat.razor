@@ -80,7 +80,7 @@
         {
             var result = await ChatClient.GetAllChatsAsync(GroupId, CancellationToken.None);
             _chats = result.ToList();
-            StateHasChanged();
+            await InvokeAsync(StateHasChanged);        
         }
         catch (Exception ex)
         {
@@ -115,5 +115,4 @@
             await SendMessage();
         }
     }
-
 }

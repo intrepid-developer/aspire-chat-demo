@@ -16,12 +16,12 @@
     </ItemGroup>
 
     <ItemGroup>
-        <PackageReference Include="Aspire.Hosting.AppHost" Version="9.2.1"/>
-        <PackageReference Include="Aspire.Hosting.Azure" Version="9.2.1" />
-        <PackageReference Include="Aspire.Hosting.Azure.AppContainers" Version="9.2.1" />
-        <PackageReference Include="Aspire.Hosting.Azure.Sql" Version="9.2.1" />
-        <PackageReference Include="Aspire.Hosting.Azure.Storage" Version="9.2.1" />
-        <PackageReference Include="Aspire.Hosting.Redis" Version="9.2.1"/>
+        <PackageReference Include="Aspire.Hosting.AppHost" Version="9.3.0" />
+        <PackageReference Include="Aspire.Hosting.Azure" Version="9.3.0" />
+        <PackageReference Include="Aspire.Hosting.Azure.AppContainers" Version="9.3.0" />
+        <PackageReference Include="Aspire.Hosting.Azure.Sql" Version="9.3.0" />
+        <PackageReference Include="Aspire.Hosting.Azure.Storage" Version="9.3.0" />
+        <PackageReference Include="Aspire.Hosting.Redis" Version="9.3.0" />
         <PackageReference Include="Azure.Storage.Blobs" Version="12.24.0" />
     </ItemGroup>
 
