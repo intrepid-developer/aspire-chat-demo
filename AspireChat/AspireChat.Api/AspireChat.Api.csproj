@@ -12,13 +12,13 @@
     </ItemGroup>
 
     <ItemGroup>
-        <PackageReference Include="Aspire.Azure.Storage.Blobs" Version="9.3.0" />
-        <PackageReference Include="Aspire.Microsoft.EntityFrameworkCore.SqlServer" Version="9.3.0" />
+        <PackageReference Include="Aspire.Azure.Storage.Blobs" Version="9.3.1" />
+        <PackageReference Include="Aspire.Microsoft.EntityFrameworkCore.SqlServer" Version="9.3.1" />
         <PackageReference Include="BCrypt.Net-Next" Version="4.0.3" />
         <PackageReference Include="FastEndpoints" Version="6.1.0" />
         <PackageReference Include="FastEndpoints.Security" Version="6.1.0" />
-        <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="9.0.5" />
-        <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="9.0.5">
+        <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="9.0.6" />
+        <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="9.0.6">
           <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
           <PrivateAssets>all</PrivateAssets>
         </PackageReference>
