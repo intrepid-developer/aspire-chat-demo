@@ -35,14 +35,14 @@ public class SendEndpoint(AppDbContext db) : Endpoint<Send.Request, Send.Respons
 
             await db.SaveChangesAsync(ct);
 
-            await SendOkAsync(new Send.Response
+            await Send.OkAsync(new Send.Response
             {
                 Success = true
             }, ct);
         }
         else
         {
-            await SendErrorsAsync(StatusCodes.Status400BadRequest, ct);
+            await Send.ErrorsAsync(StatusCodes.Status400BadRequest, ct);
         }
     }
 }

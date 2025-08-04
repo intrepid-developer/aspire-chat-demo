@@ -36,11 +36,11 @@ public class GetAllEndpoint(AppDbContext db) : Endpoint<GetAll.Request, GetAll.R
                                        """)
                 .ToListAsync(cancellationToken: ct);
 
-            await SendOkAsync(new GetAll.Response { Chats = chats }, ct);
+            await Send.OkAsync(new GetAll.Response { Chats = chats }, ct);
         }
         else
         {
-            await SendErrorsAsync(StatusCodes.Status400BadRequest, ct);
+            await Send.ErrorsAsync(StatusCodes.Status400BadRequest, ct);
         }
     }
 }

@@ -18,7 +18,7 @@ builder.Services.AddOpenApi();
 builder.AddSqlServerDbContext<AppDbContext>("db");
 
 // Add Blob Storage
-builder.AddAzureBlobClient("blobs");
+builder.AddAzureBlobServiceClient("blobs");
 
 // Add FastEndpoints
 builder.Services.AddFastEndpoints();

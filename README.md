@@ -61,7 +61,7 @@ The application follows a microservices-inspired architecture with:
 
 2. Install the Aspire Cli
    ```
-   dotnet tool install --global aspire.cli --prerelease
+   dotnet tool install -g Aspire.Cli
    ```
    
 3. Run the application with Aspire dashboard:

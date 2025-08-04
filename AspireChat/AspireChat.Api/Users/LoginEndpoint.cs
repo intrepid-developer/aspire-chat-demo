@@ -28,7 +28,7 @@ public class LoginEndpoint(AppDbContext db) : Endpoint<Login.Request, Login.Resp
 
         if (user is null || !BCrypt.Net.BCrypt.Verify(req.Password, user.PasswordHash))
         {
-            await SendNotFoundAsync(ct);
+            await Send.NotFoundAsync(ct);
             return;
         }
 
@@ -42,7 +42,7 @@ public class LoginEndpoint(AppDbContext db) : Endpoint<Login.Request, Login.Resp
             ]);
         });
 
-        await SendAsync(new Login.Response{
+        await Send.OkAsync(new Login.Response{
             Token = token,
             Success = true
         }, cancellation: ct);

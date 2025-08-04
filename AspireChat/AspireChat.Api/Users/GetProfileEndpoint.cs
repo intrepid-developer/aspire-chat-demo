@@ -22,7 +22,7 @@ public class GetProfileEndpoint(AppDbContext db) : EndpointWithoutRequest<GetPro
         var userId = User.FindFirst(ClaimTypes.Sid)?.Value;
         if (userId is null)
         {
-            await SendNotFoundAsync(ct);
+            await Send.NotFoundAsync(ct);
             return;
         }
 
@@ -30,11 +30,11 @@ public class GetProfileEndpoint(AppDbContext db) : EndpointWithoutRequest<GetPro
 
         if (user is null)
         {
-            await SendNotFoundAsync(ct);
+            await Send.NotFoundAsync(ct);
             return;
         }
 
-        await SendOkAsync(
+        await Send.OkAsync(
             new GetProfile.Response
             {
                 Name = user.Name,

@@ -30,6 +30,6 @@ public class GetAllEndpoint(AppDbContext db) : EndpointWithoutRequest<GetAll.Res
             })
             .ToListAsync(ct);
 
-        await SendOkAsync(new GetAll.Response { Groups = groups }, ct);
+        await Send.OkAsync(new GetAll.Response { Groups = groups }, ct);
     }
 }

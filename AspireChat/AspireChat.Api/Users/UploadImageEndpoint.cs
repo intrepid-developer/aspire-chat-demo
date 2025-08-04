@@ -31,7 +31,7 @@ public class UploadImageEndpoint(BlobServiceClient blobService, ILogger<UploadIm
         var imageUrl = blobClient.Uri.ToString();
         logger.LogInformation("Image uploaded to {ImageUrl}", imageUrl);
         
-        await SendOkAsync(new UploadImage.Response
+        await Send.OkAsync(new UploadImage.Response
         {
             ImageUrl = imageUrl
         }, ct);

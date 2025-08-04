@@ -45,7 +45,7 @@ public class RegisterEndpoint(AppDbContext db) : Endpoint<Register.Request, Regi
             ]);
         });
 
-        await SendAsync(new Register.Response
+        await Send.OkAsync(new Register.Response
         {
             Token = token,
             Success = true

@@ -27,7 +27,7 @@ public class CreateEndpoint(AppDbContext db) : Endpoint<Create.Request, Create.R
 
         await db.SaveChangesAsync(ct);
 
-        await SendOkAsync(new Create.Response
+        await Send.OkAsync(new Create.Response
         {
             Success = true
         }, ct);

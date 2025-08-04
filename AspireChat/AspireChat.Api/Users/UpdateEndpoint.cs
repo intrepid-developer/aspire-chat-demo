@@ -23,13 +23,13 @@ public class UpdateEndpoint(AppDbContext db) : Endpoint<Update.Request, Update.R
         var userId = User.FindFirst(ClaimTypes.Sid)?.Value;
         if (userId is null)
         {
-            await SendNotFoundAsync(ct);
+            await Send.NotFoundAsync(ct);
             return;
         }
         var user = await db.Users.FirstOrDefaultAsync(x => x.Id == int.Parse(userId), ct);
         if (user is null)
         {
-            await SendNotFoundAsync(ct);
+            await Send.NotFoundAsync(ct);
             return;
         }
         
@@ -44,6 +44,6 @@ public class UpdateEndpoint(AppDbContext db) : Endpoint<Update.Request, Update.R
 
         await db.SaveChangesAsync(ct);
 
-        await SendOkAsync(new Update.Response(true), ct);
+        await Send.OkAsync(new Update.Response(true), ct);
     }
 }
