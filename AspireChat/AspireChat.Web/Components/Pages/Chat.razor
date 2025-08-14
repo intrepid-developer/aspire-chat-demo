@@ -1,9 +1,10 @@
 @page "/chat/{groupId:int}/{groupName}"
-@using System.Timers
 @using AspireChat.Common.Chats
 @attribute [Authorize]
 @inject Clients.ChatClient ChatClient
 @inject ILogger<Chat> Logger
+@inject Services.IChatHubService ChatHubService
+@inject AuthenticationStateProvider AuthProviderBase
 
 <MudPaper Class="pa-6" Elevation="0">
     <MudText Typo="Typo.h5" Class="mb-2">Chat: @GroupName</MudText>
@@ -30,7 +31,7 @@
                         }
                     </MudAvatar>
                     <MudChatBubble>
-                        @chat.Message
+                        <div>@chat.Message</div>
                     </MudChatBubble>
                 </MudChat>
             }
@@ -59,19 +60,37 @@
     private List<GetAll.Dto> _chats = [];
     private string _newMessage = "";
     private bool _isSending;
-    private Timer? _timer;
+    private int _myUserId;
+
+    private Services.AuthProvider AuthProvider => (Services.AuthProvider)AuthProviderBase;
 
     protected override async Task OnInitializedAsync()
     {
+        // Determine my user id first so we can compute IsMe correctly for both history and live messages
+        _myUserId = await AuthProvider.GetUserIdAsync() ?? 0;
+
         await LoadChatsAsync();
-        _timer = new();
-        _timer.Interval = 1000;
-        _timer.Elapsed += async (object? _, ElapsedEventArgs _) =>
+        await ConnectSignalRAsync();
+    }
+
+    private async Task ConnectSignalRAsync()
+    {
+        try
         {
-            await LoadChatsAsync();
-            await InvokeAsync(StateHasChanged);
-        };
-        _timer.Enabled = true;
+            // Refresh user id in case it changed
+            _myUserId = await AuthProvider.GetUserIdAsync() ?? _myUserId;
+
+            await ChatHubService.ConnectAsync(GroupId, async dto =>
+            {
+                dto.IsMe = dto.UserId == _myUserId;
+                _chats.Add(dto);
+                await InvokeAsync(StateHasChanged);
+            });
+        }
+        catch (Exception ex)
+        {
+            Logger.LogError(ex, "Failed to connect to chat hub");
+        }
     }
 
     private async Task LoadChatsAsync()
@@ -79,8 +98,10 @@
         try
         {
             var result = await ChatClient.GetAllChatsAsync(GroupId, CancellationToken.None);
-            _chats = result.ToList();
-            await InvokeAsync(StateHasChanged);        
+            _chats = result
+                .Select(dto => { dto.IsMe = dto.UserId == _myUserId; return dto; })
+                .ToList();
+            await InvokeAsync(StateHasChanged);
         }
         catch (Exception ex)
         {
@@ -96,7 +117,7 @@
         {
             await ChatClient.SendMessageAsync(GroupId, _newMessage, CancellationToken.None);
             _newMessage = "";
-            await LoadChatsAsync();
+            // No need to reload; SignalR will push the message
         }
         catch (Exception ex)
         {
@@ -113,6 +134,18 @@
         if (e.Key == "Enter" && !_isSending && !string.IsNullOrWhiteSpace(_newMessage))
         {
             await SendMessage();
+        }
+    }
+
+    public async ValueTask DisposeAsync()
+    {
+        try
+        {
+            await ChatHubService.DisconnectAsync(GroupId);
+        }
+        catch
+        {
+            // ignored
         }
     }
 }

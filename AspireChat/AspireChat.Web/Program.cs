@@ -23,9 +23,13 @@ builder.Services.AddHttpContextAccessor();
 
 builder.Services.AddScoped<AuthenticationStateProvider,AuthProvider>();
 
+// Typed HTTP clients use Aspire service discovery base address
 builder.Services.AddHttpClient<ChatClient>(client => { client.BaseAddress = new("https://api"); });
 builder.Services.AddHttpClient<GroupClient>(client => { client.BaseAddress = new("https://api"); });
 builder.Services.AddHttpClient<UserClient>(client => { client.BaseAddress = new("https://api"); });
+
+// SignalR chat hub service
+builder.Services.AddScoped<IChatHubService, ChatHubService>();
 
 builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
     .AddCookie(options =>
