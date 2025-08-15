@@ -15,6 +15,42 @@ public class AuthProvider(ProtectedSessionStorage sessionStorage) : Authenticati
         return new AuthenticationHeaderValue("Bearer", token.Value);
     }
 
+    // Helper to get current user id from the stored JWT (supports multiple claim type keys)
+    public async Task<int?> GetUserIdAsync()
+    {
+        var token = await sessionStorage.GetAsync<string>("token");
+        var raw = token.Value;
+        if (string.IsNullOrWhiteSpace(raw)) return null;
+        var claims = ParseClaimsFromJwt(raw).ToList();
+
+        // Possible keys for user id depending on how the JWT was created/serialized
+        string[] keys =
+        [
+            "sid",
+            System.Security.Claims.ClaimTypes.Sid, // "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/sid"
+            "nameid",
+            System.Security.Claims.ClaimTypes.NameIdentifier, // "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier"
+            "sub",
+            "userid",
+            "userId",
+            "id"
+        ];
+
+        string? value = null;
+        foreach (var key in keys)
+        {
+            var match = claims.FirstOrDefault(c => string.Equals(c.Type, key, StringComparison.OrdinalIgnoreCase))?.Value;
+            if (!string.IsNullOrWhiteSpace(match))
+            {
+                value = match;
+                break;
+            }
+        }
+
+        if (int.TryParse(value, out var id)) return id;
+        return null;
+    }
+
     public override Task<AuthenticationState> GetAuthenticationStateAsync()
     {
         var anonymous = new ClaimsIdentity();

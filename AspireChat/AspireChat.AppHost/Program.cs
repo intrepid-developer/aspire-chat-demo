@@ -29,7 +29,7 @@ var cache = builder.AddRedis("cache")
 // Add SQL Server for persistent data storage
 // Uses a Docker container for local development to avoid needing a real SQL Server
 var sqlServer = builder.AddAzureSqlServer("sql")
-    .RunAsContainer();
+    .RunAsContainer(config => config.WithLifetime(ContainerLifetime.Persistent));
 
 // Create a database instance on our SQL Server
 // This will be used by our application for data storage
@@ -39,7 +39,7 @@ var database = sqlServer.AddDatabase("db");
 // Add Azure Storage for storing files, blobs, and other unstructured data
 // Uses the Azurite emulator for local development to simulate Azure Storage
 var storage = builder.AddAzureStorage("storage")
-    .RunAsEmulator();
+    .RunAsEmulator(config => config.WithLifetime(ContainerLifetime.Persistent));
 
 // Enable blob storage specifically - we'll use this for file uploads
 // This creates a blob container within our storage account

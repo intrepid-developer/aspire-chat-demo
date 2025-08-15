@@ -1,12 +1,14 @@
 using System.Security.Claims;
 using AspireChat.Api.Entities;
+using AspireChat.Api.Hubs;
 using AspireChat.Common.Chats;
 using FastEndpoints;
+using Microsoft.AspNetCore.SignalR;
 using Microsoft.EntityFrameworkCore;
 
 namespace AspireChat.Api.Chats;
 
-public class SendEndpoint(AppDbContext db) : Endpoint<Send.Request, Send.Response>
+public class SendEndpoint(AppDbContext db, IHubContext<GroupChatHub> hubContext) : Endpoint<Send.Request, Send.Response>
 {
     public override void Configure()
     {
@@ -25,15 +27,30 @@ public class SendEndpoint(AppDbContext db) : Endpoint<Send.Request, Send.Respons
             var user = await db.Users.FirstAsync(x => x.Id == id, ct);
             var group = await db.Groups
                 .FirstAsync(x => x.Id == req.GroupId, ct);
-            group.Chats.Add(new Chat
+            var chat = new Chat
             {
                 Message = req.Message,
                 Name = user.Name,
                 UserId = user.Id,
                 Group = group
-            });
+            };
+            group.Chats.Add(chat);
 
             await db.SaveChangesAsync(ct);
+
+            // Broadcast the new message to all clients in this group via SignalR
+            var dto = new GetAll.Dto
+            {
+                Id = chat.Id,
+                Name = chat.Name,
+                Message = chat.Message,
+                UserId = chat.UserId,
+                UserAvatarUrl = user.ProfileImageUrl,
+                IsMe = false
+            };
+
+            await hubContext.Clients.Group(req.GroupId.ToString())
+                .SendAsync("ReceiveMessage", dto, cancellationToken: ct);
 
             await Send.OkAsync(new Send.Response
             {

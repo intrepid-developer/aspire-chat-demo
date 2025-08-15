@@ -14,6 +14,9 @@ builder.Services.AddProblemDetails();
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
 builder.Services.AddOpenApi();
 
+// Add SignalR
+builder.Services.AddSignalR();
+
 // Add Entity Framework Core with SQL Server
 builder.AddSqlServerDbContext<AppDbContext>("db");
 
@@ -47,6 +50,9 @@ app.UseAuthentication();
 app.UseAuthorization();
 
 app.UseFastEndpoints();
+
+// Map SignalR hubs
+app.MapHub<AspireChat.Api.Hubs.GroupChatHub>("/hubs/groupchat");
 
 app.MapDefaultEndpoints();
 
