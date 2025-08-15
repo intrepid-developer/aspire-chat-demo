@@ -1,10 +1,6 @@
-using System;
-using System.Threading;
-using System.Threading.Tasks;
 using AspireChat.Common.Chats;
 using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.SignalR.Client;
-using Microsoft.Extensions.Http;
 
 namespace AspireChat.Web.Services;
 
@@ -17,8 +13,6 @@ public interface IChatHubService : IAsyncDisposable
 public class ChatHubService(AuthenticationStateProvider authProvider, ILogger<ChatHubService> logger, IHttpMessageHandlerFactory httpMessageHandlerFactory) : IChatHubService
 {
     private readonly AuthProvider _authProvider = (AuthProvider)authProvider;
-    private readonly ILogger<ChatHubService> _logger = logger;
-    private readonly IHttpMessageHandlerFactory _httpMessageHandlerFactory = httpMessageHandlerFactory;
     private HubConnection? _connection;
     private int? _joinedGroupId;
 
@@ -41,7 +35,7 @@ public class ChatHubService(AuthenticationStateProvider authProvider, ILogger<Ch
             .WithUrl(hubUrl.ToString(), options =>
             {
                 // Ensure negotiate and HTTP-based transports go through Aspire Service Discovery
-                options.HttpMessageHandlerFactory = _ => _httpMessageHandlerFactory.CreateHandler(string.Empty);
+                options.HttpMessageHandlerFactory = _ => httpMessageHandlerFactory.CreateHandler(string.Empty);
 
                 if (!string.IsNullOrEmpty(token))
                 {
@@ -59,7 +53,7 @@ public class ChatHubService(AuthenticationStateProvider authProvider, ILogger<Ch
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Error handling received message");
+                logger.LogError(ex, "Error handling received message");
             }
         });
 
@@ -80,7 +74,7 @@ public class ChatHubService(AuthenticationStateProvider authProvider, ILogger<Ch
         }
         catch (Exception ex)
         {
-            _logger.LogWarning(ex, "Error during hub disconnect");
+            logger.LogWarning(ex, "Error during hub disconnect");
         }
         finally
         {

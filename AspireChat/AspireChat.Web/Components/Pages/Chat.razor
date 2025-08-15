@@ -5,6 +5,7 @@
 @inject ILogger<Chat> Logger
 @inject Services.IChatHubService ChatHubService
 @inject AuthenticationStateProvider AuthProviderBase
+@implements IAsyncDisposable
 
 <MudPaper Class="pa-6" Elevation="0">
     <MudText Typo="Typo.h5" Class="mb-2">Chat: @GroupName</MudText>
@@ -143,9 +144,9 @@
         {
             await ChatHubService.DisconnectAsync(GroupId);
         }
-        catch
+        catch(Exception ex)
         {
-            // ignored
+            Logger.LogError(ex, "Failed to send message");
         }
     }
 }
