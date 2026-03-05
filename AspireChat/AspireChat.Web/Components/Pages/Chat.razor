@@ -1,5 +1,6 @@
 @page "/chat/{groupId:int}/{groupName}"
 @using AspireChat.Common.Chats
+@using MudX
 @attribute [Authorize]
 @inject Clients.ChatClient ChatClient
 @inject ILogger<Chat> Logger
@@ -17,24 +18,32 @@
         }
         else
         {
-            foreach (var chat in _chats.OrderBy(c => c.Id))
+            foreach (var chatGroup in GetChatGroups())
             {
-                <MudChat ChatPosition="@(chat.IsMe ? ChatBubblePosition.End : ChatBubblePosition.Start)">
-                    <MudChatHeader Name="@chat.Name"/>
+                <MudXChat ChatPosition="@(chatGroup.IsMe ? ChatBubblePosition.End : ChatBubblePosition.Start)"
+                          Dense="false"
+                          Elevation="0"
+                          Variant="Variant.Filled"
+                          ArrowPosition="ChatArrowPosition.Top">
+                    <MudXChatHeader Name="@chatGroup.Name"/>
                     <MudAvatar>
-                        @if (string.IsNullOrEmpty(chat.UserAvatarUrl))
+                        @if (string.IsNullOrEmpty(chatGroup.UserAvatarUrl))
                         {
                             <MudIcon Icon="@Icons.Material.Filled.Person"/>
                         }
                         else
                         {
-                            <MudImage Src="@chat.UserAvatarUrl"/>
+                            <MudImage Src="@chatGroup.UserAvatarUrl"/>
                         }
                     </MudAvatar>
-                    <MudChatBubble>
-                        <div>@chat.Message</div>
-                    </MudChatBubble>
-                </MudChat>
+                    @foreach (var message in chatGroup.Messages)
+                    {
+                        <MudXChatBubble>
+                            <div>@message</div>
+                        </MudXChatBubble>
+                    }
+                    <MudXChatFooter Text="@GetFooterText(chatGroup.Messages.Count)" />
+                </MudXChat>
             }
         }
     </MudStack>
@@ -138,6 +147,42 @@
         }
     }
 
+    private IReadOnlyList<ChatGroup> GetChatGroups()
+    {
+        var groups = new List<ChatGroup>();
+        ChatGroup? current = null;
+
+        foreach (var chat in _chats.OrderBy(c => c.Id))
+        {
+            if (current is null || current.UserId != chat.UserId)
+            {
+                current = new ChatGroup
+                {
+                    UserId = chat.UserId,
+                    Name = chat.Name,
+                    UserAvatarUrl = chat.UserAvatarUrl,
+                    IsMe = chat.IsMe,
+                    Messages = [chat.Message]
+                };
+
+                groups.Add(current);
+                continue;
+            }
+
+            current.Messages.Add(chat.Message);
+
+            if (string.IsNullOrWhiteSpace(current.UserAvatarUrl) && !string.IsNullOrWhiteSpace(chat.UserAvatarUrl))
+            {
+                current.UserAvatarUrl = chat.UserAvatarUrl;
+            }
+        }
+
+        return groups;
+    }
+
+    private static string GetFooterText(int messageCount)
+        => messageCount == 1 ? "1 message" : $"{messageCount} messages";
+
     public async ValueTask DisposeAsync()
     {
         try
@@ -148,5 +193,14 @@
         {
             Logger.LogError(ex, "Failed to send message");
         }
+    }
+
+    private sealed class ChatGroup
+    {
+        public int UserId { get; set; }
+        public string Name { get; set; } = string.Empty;
+        public string? UserAvatarUrl { get; set; }
+        public bool IsMe { get; set; }
+        public List<string> Messages { get; set; } = [];
     }
 }

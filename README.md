@@ -42,6 +42,12 @@ The application follows a microservices-inspired architecture with:
 - **AspireChat.Web**: Blazor Server frontend application
 - **AspireChat.ServiceDefaults**: Shared service configuration and defaults
 
+## 🤖 OpenCode Agents
+
+This repository includes OpenCode agent workflows for common Aspire Chat tasks (feature slices, API/UI updates, SignalR chat behavior, test reliability, infrastructure wiring, docs sync, and code review).
+
+- See `.opencode/README.md` for the full agent catalog, usage guidance, and examples.
+
 ## 🚀 Getting Started
 
 ### Prerequisites
