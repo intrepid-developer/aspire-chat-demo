@@ -1,0 +1,7 @@
+﻿{
+  StatusCode: 200,
+  Groups: [
+    alpha,
+    beta
+  ]
+}

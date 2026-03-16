@@ -1,0 +1,10 @@
+﻿{
+  UpdateStatusCode: 200,
+  Success: true,
+  ProfileStatusCode: 200,
+  Profile: {
+    Name: Updated User,
+    Email: <updated-user-email>,
+    ProfileImageUrl: https://cdn.example.com/avatar.png
+  }
+}

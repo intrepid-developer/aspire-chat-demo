@@ -1,0 +1,7 @@
+﻿{
+  StatusCode: 200,
+  Profile: {
+    Name: Profile User,
+    Email: <registered-user-email>
+  }
+}

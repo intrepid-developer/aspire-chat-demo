@@ -1,0 +1,13 @@
+﻿{
+  StatusCode: 200,
+  Scheme: http,
+  Host: 127.0.0.1,
+  Segments: [
+    /,
+    devstoreaccount1/,
+    images/,
+    Guid_1_avatar.png
+  ],
+  HasImagesContainer: true,
+  EndsWithPng: true
+}

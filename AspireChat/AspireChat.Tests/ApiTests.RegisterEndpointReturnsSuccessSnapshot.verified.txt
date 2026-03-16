@@ -1,0 +1,5 @@
+﻿{
+  StatusCode: 200,
+  Success: true,
+  TokenPresent: true
+}

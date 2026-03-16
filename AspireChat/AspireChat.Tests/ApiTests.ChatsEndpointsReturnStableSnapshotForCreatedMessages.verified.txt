@@ -1,0 +1,23 @@
+﻿{
+  CreateGroupStatusCode: 200,
+  SendStatusCode: 200,
+  Success: true,
+  SenderChatStatusCode: 200,
+  ReceiverChatStatusCode: 200,
+  SenderView: [
+    {
+      Name: Chat Sender,
+      Message: <chat-message>,
+      IsMe: true,
+      HasAvatar: false
+    }
+  ],
+  ReceiverView: [
+    {
+      Name: Chat Sender,
+      Message: <chat-message>,
+      IsMe: false,
+      HasAvatar: false
+    }
+  ]
+}
