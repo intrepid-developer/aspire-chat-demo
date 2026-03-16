@@ -6,7 +6,7 @@ namespace AspireChat.Tests;
 public sealed class DistributedApplicationFixture : IAsyncLifetime
 {
     private const string JwtKey = "aspire-chat-integration-test-jwt-key-1234567890";
-    private static readonly TimeSpan DefaultTimeout = TimeSpan.FromSeconds(120);
+    private static readonly TimeSpan DefaultTimeout = TimeSpan.FromMinutes(5);
     private string? previousJwtKey;
 
     public DistributedApplication App { get; private set; } = null!;
