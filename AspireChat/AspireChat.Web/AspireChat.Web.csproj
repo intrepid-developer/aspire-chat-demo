@@ -12,10 +12,10 @@
     </ItemGroup>
 
     <ItemGroup>
-        <PackageReference Include="Aspire.StackExchange.Redis.OutputCaching" Version="13.1.2" />
-        <PackageReference Include="MudBlazor" Version="9.1.0" />
+        <PackageReference Include="Aspire.StackExchange.Redis.OutputCaching" Version="13.2.2" />
+        <PackageReference Include="MudBlazor" Version="9.3.0" />
         <PackageReference Include="MudBlazor.FontIcons.MaterialSymbols" Version="1.4.0" />
-        <PackageReference Include="Microsoft.AspNetCore.SignalR.Client" Version="10.0.3" />
+        <PackageReference Include="Microsoft.AspNetCore.SignalR.Client" Version="10.0.6" />
         <PackageReference Include="MudX.MudBlazor.Extension" Version="9.0.0" />
     </ItemGroup>
 

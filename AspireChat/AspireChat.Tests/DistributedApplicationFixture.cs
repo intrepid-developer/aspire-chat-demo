@@ -31,6 +31,10 @@ public sealed class DistributedApplicationFixture : IAsyncLifetime
 
         App = await appHost.BuildAsync(cancellationToken).WaitAsync(DefaultTimeout, cancellationToken);
         await App.StartAsync(cancellationToken).WaitAsync(DefaultTimeout, cancellationToken);
+        await App.ResourceNotifications.WaitForResourceHealthyAsync("sql", cancellationToken)
+            .WaitAsync(DefaultTimeout, cancellationToken);
+        await App.ResourceNotifications.WaitForResourceHealthyAsync("db", cancellationToken)
+            .WaitAsync(DefaultTimeout, cancellationToken);
         await App.ResourceNotifications.WaitForResourceHealthyAsync("api", cancellationToken)
             .WaitAsync(DefaultTimeout, cancellationToken);
         await WaitForApiReadyAsync(cancellationToken);
@@ -64,13 +68,26 @@ public sealed class DistributedApplicationFixture : IAsyncLifetime
         {
             try
             {
-                using var response = await apiClient.GetAsync("/", cancellationToken);
-                if (response is not null)
+                foreach (var probePath in new[] { "/health", "/users/profile", "/" })
                 {
-                    return;
+                    using var response = await apiClient.GetAsync(probePath, cancellationToken);
+                    if (response is null)
+                    {
+                        continue;
+                    }
+
+                    if ((int)response.StatusCode < 500)
+                    {
+                        return;
+                    }
+
+                    lastError = new InvalidOperationException($"API readiness probe hit {probePath} but returned status {(int)response.StatusCode}.");
                 }
 
-                lastError = new InvalidOperationException("API readiness probe did not return a response.");
+                if (lastError is null)
+                {
+                    lastError = new InvalidOperationException("API readiness probe did not return an HTTP response.");
+                }
             }
             catch (Exception ex) when (ex is HttpRequestException or TaskCanceledException)
             {
