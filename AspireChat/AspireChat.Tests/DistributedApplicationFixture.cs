@@ -28,12 +28,12 @@ public sealed class DistributedApplicationFixture : IAsyncLifetime
             logging.AddFilter("Microsoft.AspNetCore", LogLevel.Warning);
             logging.AddFilter("Aspire.", LogLevel.Warning);
         });
-        appHost.Services.ConfigureHttpClientDefaults(clientBuilder => clientBuilder.AddStandardResilienceHandler());
 
         App = await appHost.BuildAsync(cancellationToken).WaitAsync(DefaultTimeout, cancellationToken);
         await App.StartAsync(cancellationToken).WaitAsync(DefaultTimeout, cancellationToken);
         await App.ResourceNotifications.WaitForResourceHealthyAsync("api", cancellationToken)
             .WaitAsync(DefaultTimeout, cancellationToken);
+        await WaitForApiReadyAsync(cancellationToken);
         await App.ResourceNotifications.WaitForResourceHealthyAsync("web", cancellationToken)
             .WaitAsync(DefaultTimeout, cancellationToken);
     }
@@ -51,4 +51,35 @@ public sealed class DistributedApplicationFixture : IAsyncLifetime
     public HttpClient CreateApiClient() => App.CreateHttpClient("api");
 
     public HttpClient CreateWebClient() => App.CreateHttpClient("web");
+
+    private async Task WaitForApiReadyAsync(CancellationToken cancellationToken)
+    {
+        using var apiClient = App.CreateHttpClient("api");
+        apiClient.Timeout = TimeSpan.FromSeconds(10);
+
+        var deadline = DateTime.UtcNow.Add(DefaultTimeout);
+        Exception? lastError = null;
+
+        while (DateTime.UtcNow < deadline)
+        {
+            try
+            {
+                using var response = await apiClient.GetAsync("/", cancellationToken);
+                if (response is not null)
+                {
+                    return;
+                }
+
+                lastError = new InvalidOperationException("API readiness probe did not return a response.");
+            }
+            catch (Exception ex) when (ex is HttpRequestException or TaskCanceledException)
+            {
+                lastError = ex;
+            }
+
+            await Task.Delay(500, cancellationToken);
+        }
+
+        throw new TimeoutException("API readiness probe did not return a successful health response in time.", lastError);
+    }
 }

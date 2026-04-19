@@ -6,11 +6,11 @@ public class UploadImage
 {
     public class Request
     {
-        public IFormFile Image { get; set; }
-        public string ImageName { get; set; }
+        public IFormFile Image { get; set; } = null!;
+        public string ImageName { get; set; } = string.Empty;
     }
     public class Response
     {
-        public string ImageUrl { get; set; }
+        public string ImageUrl { get; set; } = string.Empty;
     }
 }
