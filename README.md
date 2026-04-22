@@ -80,6 +80,21 @@ This repository includes OpenCode agent workflows for common Aspire Chat tasks (
 4. Navigate to the Aspire dashboard to view and manage your services
 ![Aspire Cli](Images/aspire-cli.png)
 
+## 🧪 Aspire-based tests
+
+This repository now includes Aspire-powered integration tests in `AspireChat/AspireChat.Tests`.
+
+- The tests use `Aspire.Hosting.Testing` to boot the AppHost and exercise the application through its real Aspire-wired services.
+- They validate behavior against the distributed application setup rather than isolated unit-test doubles.
+- A working container runtime such as Docker Desktop is required because the test environment starts supporting infrastructure locally.
+
+Run the test suite with:
+
+```bash
+cd AspireChat
+dotnet test --project AspireChat.Tests/AspireChat.Tests.csproj -c Release
+```
+
 ### Deployment to Azure
 
 The blog series will cover step-by-step deployment to Azure using:
