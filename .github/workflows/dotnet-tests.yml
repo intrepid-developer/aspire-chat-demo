@@ -23,6 +23,12 @@ jobs:
           dotnet-version: 10.0.x
           dotnet-quality: ga
 
+      - name: Configure OpenSSL certificate directory
+        shell: bash
+        run: |
+          openssl_cert_dir="$(openssl version -d | sed -E 's/^OPENSSLDIR: "(.*)"$/\1/')/certs"
+          echo "SSL_CERT_DIR=$HOME/.aspnet/dev-certs/trust:${SSL_CERT_DIR:-$openssl_cert_dir}" >> "$GITHUB_ENV"
+
       - name: Trust ASP.NET Core development certificate
         run: dotnet dev-certs https --trust
 
