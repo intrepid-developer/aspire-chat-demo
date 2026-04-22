@@ -23,6 +23,9 @@ jobs:
           dotnet-version: 10.0.x
           dotnet-quality: ga
 
+      - name: Trust ASP.NET Core development certificate
+        run: dotnet dev-certs https --trust
+
       - name: Restore dependencies
         run: dotnet restore AspireChat.sln
 

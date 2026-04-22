@@ -13,13 +13,14 @@
         </MudAvatar>
         <MudStack AlignItems="AlignItems.Center" Row="true">
             <MudFileUpload T="IBrowserFile" FilesChanged="UploadFiles">
-                <ActivatorContent>
+                <CustomContent Context="fileUpload">
                     <MudButton Variant="Variant.Filled"
                                Color="Color.Primary"
+                               OnClick="@fileUpload.OpenFilePickerAsync"
                                StartIcon="@Icons.Material.Filled.CloudUpload">
                         Change Profile Image
                     </MudButton>
-                </ActivatorContent>
+                </CustomContent>
             </MudFileUpload>
         </MudStack>
         <MudForm @ref="_form">
@@ -73,7 +74,7 @@
 
     private async Task OnSave()
     {
-        await _form.Validate();
+        await _form.ValidateAsync();
         if (!_form.IsValid)
             return;
 

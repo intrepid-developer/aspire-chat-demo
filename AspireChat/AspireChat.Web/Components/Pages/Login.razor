@@ -84,8 +84,11 @@
     private async Task HandleLogin()
     {
         _error = string.Empty;
-        await _form?.Validate()!;
-        if (_form is not null && !_form.IsValid)
+        if (_form is null)
+            return;
+
+        await _form.ValidateAsync();
+        if (!_form.IsValid)
             return;
 
         _loading = true;
@@ -115,8 +118,11 @@
     private async Task HandleRegister()
     {
         _error = string.Empty;
-        await _form?.Validate()!;
-        if (_form is not null && !_form.IsValid)
+        if (_form is null)
+            return;
+
+        await _form.ValidateAsync();
+        if (!_form.IsValid)
             return;
 
         if (_password != _confirmPassword)
@@ -149,11 +155,15 @@
         }
     }
 
-    private void ToggleMode()
+    private async Task ToggleMode()
     {
         _isRegister = !_isRegister;
         _error = string.Empty;
-        _form?.ResetAsync().Wait();
+        if (_form is not null)
+        {
+            await _form.ResetAsync();
+        }
+
         _password = string.Empty;
         _confirmPassword = string.Empty;
     }
