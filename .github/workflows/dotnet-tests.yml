@@ -35,5 +35,18 @@ jobs:
       - name: Restore dependencies
         run: dotnet restore AspireChat.sln
 
+      - name: Cache Playwright browsers
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/ms-playwright
+          key: ${{ runner.os }}-playwright-${{ hashFiles('AspireChat/AspireChat.Tests/AspireChat.Tests.csproj') }}
+          restore-keys: |
+            ${{ runner.os }}-playwright-
+
+      - name: Install Playwright browsers
+        run: |
+          dotnet tool install --global Microsoft.Playwright.CLI
+          playwright install --with-deps chromium
+
       - name: Run tests
         run: dotnet test --solution AspireChat.sln --configuration Release --no-restore
