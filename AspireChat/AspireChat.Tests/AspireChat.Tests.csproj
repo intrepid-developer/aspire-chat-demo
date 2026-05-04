@@ -11,10 +11,10 @@
 
 
     <ItemGroup>
-        <PackageReference Include="Aspire.Hosting.Testing" Version="13.2.2" />
+        <PackageReference Include="Aspire.Hosting.Testing" Version="13.2.4" />
         <PackageReference Include="Microsoft.Testing.Extensions.CodeCoverage" Version="18.6.2" />
-        <PackageReference Include="Microsoft.NET.Test.Sdk" Version="18.4.0" />
-        <PackageReference Include="Verify.XunitV3" Version="31.16.1" />
+        <PackageReference Include="Microsoft.NET.Test.Sdk" Version="18.5.1" />
+        <PackageReference Include="Verify.XunitV3" Version="31.16.2" />
         <PackageReference Include="xunit.v3.mtp-v2" Version="3.2.2" />
     </ItemGroup>
 
