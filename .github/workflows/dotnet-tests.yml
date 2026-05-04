@@ -47,7 +47,7 @@ jobs:
         run: dotnet build AspireChat.Tests/AspireChat.Tests.csproj --configuration Release --no-restore
 
       - name: Install Playwright browsers
-        run: pwsh AspireChat/AspireChat.Tests/bin/Release/net10.0/playwright.ps1 install --with-deps chromium
+        run: pwsh AspireChat.Tests/bin/Release/net10.0/playwright.ps1 install --with-deps chromium
 
       - name: Run tests
         run: dotnet test --solution AspireChat.sln --configuration Release --no-restore
