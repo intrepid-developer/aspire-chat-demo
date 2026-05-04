@@ -33,12 +33,18 @@ public sealed class WebTests(DistributedApplicationFixture fixture)
         });
         var page = await context.NewPageAsync();
 
+        // Increase default timeout for CI environments (GitHub runners can be slower)
+        page.SetDefaultTimeout(60000);
+
         await page.GotoAsync($"{webUrl}/Login");
 
-        // Switch from Login to Register mode (the secondary "Register" button)
+        // Switch from Login to Register mode
         await page.GetByRole(AriaRole.Button, new() { Name = "Register" }).ClickAsync();
 
-        // Fill registration fields (labels become visible in register mode)
+        // Wait for the registration form to fully render (Name field only exists in register mode)
+        await page.GetByLabel("Name").WaitForAsync(new LocatorWaitForOptions { Timeout = 30000 });
+
+        // Fill registration fields
         await page.GetByLabel("Email").FillAsync(uniqueEmail);
         await page.GetByLabel("Name").FillAsync("Playwright Test");
         await page.GetByLabel("Password", new() { Exact = true }).FillAsync("P@ssw0rd123!");
@@ -50,7 +56,7 @@ public sealed class WebTests(DistributedApplicationFixture fixture)
         // Verify we navigated away from the login page (successful registration + auto-login)
         await page.WaitForURLAsync(
             url => !url.Contains("/Login", StringComparison.OrdinalIgnoreCase),
-            new() { Timeout = 15000 });
+            new() { Timeout = 30000 });
 
         // Ensure no error alert is shown
         Assert.False(await page.GetByRole(AriaRole.Alert).IsVisibleAsync());
