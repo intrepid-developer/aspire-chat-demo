@@ -1,10 +1,12 @@
 using AspireChat.Api.Entities;
 using AspireChat.Common.Groups;
 using FastEndpoints;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.EntityFrameworkCore;
 
 namespace AspireChat.Api.Groups;
 
+[Authorize]
 public class GetAllEndpoint(AppDbContext db) : EndpointWithoutRequest<GetAll.Response>
 {
     public override void Configure()

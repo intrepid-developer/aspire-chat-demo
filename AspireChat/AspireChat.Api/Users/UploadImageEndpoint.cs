@@ -2,9 +2,11 @@ using AspireChat.Common.Users;
 using Azure.Storage.Blobs;
 using Azure.Storage.Blobs.Models;
 using FastEndpoints;
+using Microsoft.AspNetCore.Authorization;
 
 namespace AspireChat.Api.Users;
 
+[Authorize]
 public class UploadImageEndpoint(BlobServiceClient blobService, ILogger<UploadImageEndpoint> logger) : Endpoint<UploadImage.Request, UploadImage.Response>
 {
     public override void Configure()
@@ -14,7 +16,6 @@ public class UploadImageEndpoint(BlobServiceClient blobService, ILogger<UploadIm
         Description(x => x
             .WithName("Upload Image")
             .Produces<UploadImage.Response>()
-            .Produces(StatusCodes.Status400BadRequest)
             .Produces(StatusCodes.Status401Unauthorized)
             .Produces(StatusCodes.Status500InternalServerError));
     }

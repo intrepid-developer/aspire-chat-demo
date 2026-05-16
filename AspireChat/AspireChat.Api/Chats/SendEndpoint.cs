@@ -3,11 +3,13 @@ using AspireChat.Api.Entities;
 using AspireChat.Api.Hubs;
 using AspireChat.Common.Chats;
 using FastEndpoints;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.SignalR;
 using Microsoft.EntityFrameworkCore;
 
 namespace AspireChat.Api.Chats;
 
+[Authorize]
 public class SendEndpoint(AppDbContext db, IHubContext<GroupChatHub> hubContext) : Endpoint<Send.Request, Send.Response>
 {
     public override void Configure()
@@ -59,7 +61,7 @@ public class SendEndpoint(AppDbContext db, IHubContext<GroupChatHub> hubContext)
         }
         else
         {
-            await Send.ErrorsAsync(StatusCodes.Status400BadRequest, ct);
+            await Send.UnauthorizedAsync(ct);
         }
     }
 }

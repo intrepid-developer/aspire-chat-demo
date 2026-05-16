@@ -1,7 +1,9 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.SignalR;
 
 namespace AspireChat.Api.Hubs;
 
+[Authorize]
 public class GroupChatHub : Hub
 {
     public async Task JoinGroup(string groupId)
