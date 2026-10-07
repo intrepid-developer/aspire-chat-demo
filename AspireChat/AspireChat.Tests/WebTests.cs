@@ -32,25 +32,61 @@ public sealed class WebTests(DistributedApplicationFixture fixture)
             IgnoreHTTPSErrors = true
         });
         var page = await context.NewPageAsync();
+        var browserLogs = new List<string>();
+        page.Console += (_, msg) => browserLogs.Add($"{msg.Type}: {msg.Text}");
+        page.PageError += (_, msg) => browserLogs.Add($"pageerror: {msg}");
 
         // Increase default timeout for CI environments (GitHub runners can be slower)
         page.SetDefaultTimeout(60000);
 
-        await page.GotoAsync($"{webUrl}/Login");
+        await page.GotoAsync($"{webUrl}/Login", new() { WaitUntil = WaitUntilState.NetworkIdle });
+        await page.GetByText("Don't have an account?").WaitForAsync(new() { Timeout = 30000 });
+        await page.WaitForFunctionAsync("() => window.Blazor", new PageWaitForFunctionOptions { Timeout = 30000 });
 
-        // Switch from Login to Register mode
-        await page.GetByRole(AriaRole.Button, new() { Name = "Register" }).ClickAsync();
+        // Switch from Login to Register mode. MudBlazor 9.11 floating labels are not always
+        // exposed to GetByLabel, so the form uses stable InputId values instead.
+        // Only click the toggle while still in login mode so a slow Blazor render does not
+        // flip back to login on retry.
+        var registerName = page.Locator("#register-name");
+        var loginPrompt = page.GetByText("Don't have an account?");
+        var registerPrompt = page.GetByText("Already have an account?");
+        var deadline = DateTime.UtcNow.AddSeconds(30);
 
-        // Wait for the registration form to fully render (Name field only exists in register mode)
-        await page.GetByLabel("Name").WaitForAsync(new LocatorWaitForOptions { Timeout = 30000 });
+        while (DateTime.UtcNow < deadline)
+        {
+            if (await registerName.IsVisibleAsync() || await registerPrompt.IsVisibleAsync())
+            {
+                await registerName.WaitForAsync(new LocatorWaitForOptions { Timeout = 10000 });
+                break;
+            }
 
-        // Fill registration fields
-        await page.GetByLabel("Email").FillAsync(uniqueEmail);
-        await page.GetByLabel("Name").FillAsync("Playwright Test");
-        await page.GetByLabel("Password", new() { Exact = true }).FillAsync("P@ssw0rd123!");
-        await page.GetByLabel("Confirm Password").FillAsync("P@ssw0rd123!");
+            if (await loginPrompt.IsVisibleAsync())
+            {
+                await page.Locator("#toggle-auth-mode").ClickAsync();
+            }
 
-        // Submit the registration form
+            try
+            {
+                await registerName.WaitForAsync(new LocatorWaitForOptions { Timeout = 5000 });
+                break;
+            }
+            catch (TimeoutException)
+            {
+                // Stay idle unless the login prompt is still showing; never click while register mode is settling.
+            }
+        }
+
+        if (!await registerName.IsVisibleAsync())
+        {
+            throw new TimeoutException(
+                $"Register form did not appear after toggling auth mode. URL={page.Url}. Browser logs:{Environment.NewLine}{string.Join(Environment.NewLine, browserLogs)}");
+        }
+
+        await page.Locator("#register-email").FillAsync(uniqueEmail);
+        await registerName.FillAsync("Playwright Test");
+        await page.Locator("#register-password").FillAsync("P@ssw0rd123!");
+        await page.Locator("#register-confirm-password").FillAsync("P@ssw0rd123!");
+
         await page.GetByRole(AriaRole.Button, new() { Name = "Register" }).ClickAsync();
 
         // Verify we navigated away from the login page (successful registration + auto-login)

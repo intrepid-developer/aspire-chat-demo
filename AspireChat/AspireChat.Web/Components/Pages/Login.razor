@@ -11,22 +11,22 @@
             <MudForm @ref="_form">
                 @if (_isRegister)
                 {
-                    <MudTextField @bind-Value="_email" Label="Email" Required="true" For="@(() => _email)"
+                    <MudTextField @bind-Value="_email" Label="Email" InputId="register-email" Required="true" For="@(() => _email)"
                                   Variant="Variant.Filled" Class="mb-2"/>
-                    <MudTextField @bind-Value="_name" Label="Name" Required="true" For="@(() => _name)"
+                    <MudTextField @bind-Value="_name" Label="Name" InputId="register-name" Required="true" For="@(() => _name)"
                                   Variant="Variant.Filled" Class="mb-2"/>
-                    <MudTextField @bind-Value="_password" Label="Password" InputType="InputType.Password"
+                    <MudTextField @bind-Value="_password" Label="Password" InputId="register-password" InputType="InputType.Password"
                                   Required="true"
                                   For="@(() => _password)" Variant="Variant.Filled" Class="mb-2"/>
-                    <MudTextField @bind-Value="_confirmPassword" Label="Confirm Password" InputType="InputType.Password"
+                    <MudTextField @bind-Value="_confirmPassword" Label="Confirm Password" InputId="register-confirm-password" InputType="InputType.Password"
                                   Required="true" For="@(() => _confirmPassword)" Variant="Variant.Filled"
                                   Class="mb-2"/>
                 }
                 else
                 {
-                    <MudTextField @bind-Value="_email" Label="Email" Required="true" For="@(() => _email)"
+                    <MudTextField @bind-Value="_email" Label="Email" InputId="login-email" Required="true" For="@(() => _email)"
                                   Variant="Variant.Filled" Class="mb-2"/>
-                    <MudTextField @bind-Value="_password" Label="Password" InputType="InputType.Password"
+                    <MudTextField @bind-Value="_password" Label="Password" InputId="login-password" InputType="InputType.Password"
                                   Required="true"
                                   For="@(() => _password)" Variant="Variant.Filled" Class="mb-2"/>
                 }
@@ -58,7 +58,8 @@
             <MudText Class="me-1">
                 @(_isRegister ? "Already have an account?" : "Don't have an account?")
             </MudText>
-            <MudButton Variant="Variant.Text"
+            <MudButton id="toggle-auth-mode"
+                       Variant="Variant.Text"
                        Color="Color.Secondary"
                        OnClick="ToggleMode"
                        Disabled="_loading"

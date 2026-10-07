@@ -7,16 +7,19 @@
         <IsPackable>false</IsPackable>
         <IsTestProject>true</IsTestProject>
         <UseMicrosoftTestingPlatformRunner>true</UseMicrosoftTestingPlatformRunner>
+        <!-- Verify 33+ requires a SponsorCheck license. This MIT demo is non-revenue OSS; renew by 2027-10. -->
+        <Verify_SponsorshipExemption>OpenSource</Verify_SponsorshipExemption>
+        <Verify_SponsorshipExemptionUntil>2027-10</Verify_SponsorshipExemptionUntil>
     </PropertyGroup>
 
 
     <ItemGroup>
-        <PackageReference Include="Aspire.Hosting.Testing" Version="13.2.4" />
-        <PackageReference Include="Microsoft.Playwright" Version="1.52.0" />
-        <PackageReference Include="Microsoft.Testing.Extensions.CodeCoverage" Version="18.6.2" />
-        <PackageReference Include="Microsoft.NET.Test.Sdk" Version="18.5.1" />
-        <PackageReference Include="Verify.XunitV3" Version="31.16.2" />
-        <PackageReference Include="xunit.v3.mtp-v2" Version="3.2.2" />
+        <PackageReference Include="Aspire.Hosting.Testing" Version="13.6.1" />
+        <PackageReference Include="Microsoft.Playwright" Version="1.63.0" />
+        <PackageReference Include="Microsoft.Testing.Extensions.CodeCoverage" Version="18.11.2" />
+        <PackageReference Include="Microsoft.NET.Test.Sdk" Version="18.10.1" />
+        <PackageReference Include="Verify.XunitV3" Version="33.3.0" />
+        <PackageReference Include="xunit.v3.mtp-v2" Version="4.0.1" />
     </ItemGroup>
 
     <ItemGroup>
