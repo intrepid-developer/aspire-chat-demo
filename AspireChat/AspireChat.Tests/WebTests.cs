@@ -45,23 +45,38 @@ public sealed class WebTests(DistributedApplicationFixture fixture)
 
         // Switch from Login to Register mode. MudBlazor 9.11 floating labels are not always
         // exposed to GetByLabel, so the form uses stable InputId values instead.
+        // Only click the toggle while still in login mode so a slow Blazor render does not
+        // flip back to login on retry.
         var registerName = page.Locator("#register-name");
-        var switched = false;
-        for (var attempt = 0; attempt < 5 && !switched; attempt++)
+        var loginPrompt = page.GetByText("Don't have an account?");
+        var registerPrompt = page.GetByText("Already have an account?");
+        var deadline = DateTime.UtcNow.AddSeconds(30);
+
+        while (DateTime.UtcNow < deadline)
         {
-            await page.Locator("#toggle-auth-mode").ClickAsync();
+            if (await registerName.IsVisibleAsync() || await registerPrompt.IsVisibleAsync())
+            {
+                await registerName.WaitForAsync(new LocatorWaitForOptions { Timeout = 10000 });
+                break;
+            }
+
+            if (await loginPrompt.IsVisibleAsync())
+            {
+                await page.Locator("#toggle-auth-mode").ClickAsync();
+            }
+
             try
             {
-                await registerName.WaitForAsync(new LocatorWaitForOptions { Timeout = 3000 });
-                switched = true;
+                await registerName.WaitForAsync(new LocatorWaitForOptions { Timeout = 5000 });
+                break;
             }
             catch (TimeoutException)
             {
-                await page.WaitForTimeoutAsync(500);
+                // Stay idle unless the login prompt is still showing; never click while register mode is settling.
             }
         }
 
-        if (!switched)
+        if (!await registerName.IsVisibleAsync())
         {
             throw new TimeoutException(
                 $"Register form did not appear after toggling auth mode. URL={page.Url}. Browser logs:{Environment.NewLine}{string.Join(Environment.NewLine, browserLogs)}");
