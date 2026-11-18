@@ -61,7 +61,7 @@ var jwtKey = builder.AddParameter("jwt-key", true);
 // 1. API SERVICE
 // Add our backend API project that will provide data to our frontend
 #pragma warning disable ASPIRECOMPUTE001
-var api = builder.AddProject<Projects.AspireChat_Api>("api")
+var api = builder.AddDotnetProject("api", "../AspireChat.Api/AspireChat.Api.csproj")
     //Add Secrets and Environment variables
     .WithEnvironment("JWT_KEY", jwtKey)
 
@@ -175,7 +175,7 @@ database.WithCommand(
 
 // 2. WEB FRONTEND
 // Add our web frontend project (Blazor app that users will interact with)
-var web = builder.AddProject<Projects.AspireChat_Web>("web")
+var web = builder.AddDotnetProject("web", "../AspireChat.Web/AspireChat.Web.csproj")
     // Make the web frontend publicly accessible when deployed
     .WithExternalHttpEndpoints()
 

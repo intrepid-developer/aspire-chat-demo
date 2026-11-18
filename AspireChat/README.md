@@ -40,11 +40,11 @@ The application follows a microservices-inspired architecture with:
 
 ### Prerequisites
 
-- .NET 9 SDK
+- .NET 10 SDK
 - Docker Desktop
 - Visual Studio 2022 or later / VS Code with C# Dev Kit
 - Azure subscription (for deployment)
-- Aspire Cli
+- Aspire CLI 17.0.0
 
 ### Local Development
 
@@ -54,14 +54,15 @@ The application follows a microservices-inspired architecture with:
    cd aspire-chat-demo
    ```
 
-2. Install the Aspire Cli
+2. Install the Aspire CLI 17.0.0 (required to build a C# AppHost; see ASPIRE013):
     ```
-    dotnet tool install --global aspire.cli --prerelease
+    curl -sSL https://aspire.dev/install.sh | bash -s -- --version 17.0.0
     ```
-3. Run the application with Aspire dashboard (from the AppHost directory):
+3. Run the application with Aspire dashboard:
    ```
-   aspire run
+   aspire start
    ```
+   Interactive equivalent: `aspire run`.
 
 4Navigate to the Aspire dashboard (automatically opened) to view and manage your services
 

@@ -52,10 +52,10 @@ This repository includes OpenCode agent workflows for common Aspire Chat tasks (
 
 ### Prerequisites
 
-- .NET 9 SDK
+- .NET 10 SDK
 - Docker Desktop
 - Jetbrains Rider, Visual Studio 2022 or later / VS Code with C# Dev Kit
-- Aspire Cli
+- Aspire CLI 17.0.0
 - Azure subscription (for deployment)
 
 ### Local Development
@@ -66,16 +66,16 @@ This repository includes OpenCode agent workflows for common Aspire Chat tasks (
    cd aspire-chat-demo
    ```
 
-2. Install the Aspire Cli
+2. Install the Aspire CLI 17.0.0 (required to build a C# AppHost; see ASPIRE013):
    ```
-   dotnet tool install -g Aspire.Cli
+   curl -sSL https://aspire.dev/install.sh | bash -s -- --version 17.0.0
    ```
    
 3. Run the application with Aspire dashboard:
    ```
-   cd AspireChat/AspireChat.AppHost
-   aspire run
+   aspire start
    ```
+   Interactive equivalent: `aspire run`.
 
 4. Navigate to the Aspire dashboard to view and manage your services
 ![Aspire Cli](Images/aspire-cli.png)
