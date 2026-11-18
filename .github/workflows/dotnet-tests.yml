@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - main
+  pull_request:
 
 jobs:
   test:
@@ -22,6 +23,11 @@ jobs:
         with:
           dotnet-version: 10.0.x
           dotnet-quality: ga
+
+      - name: Install Aspire CLI
+        run: |
+          curl -sSL https://aspire.dev/install.sh | bash -s -- --version 17.0.0
+          echo "$HOME/.aspire/bin" >> "$GITHUB_PATH"
 
       - name: Configure OpenSSL certificate directory
         shell: bash
